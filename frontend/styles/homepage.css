@@ -1,0 +1,24 @@
+.main-container {
+    min-height: 100vh;
+    background-color: #f3f4f6;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 0;
+  }
+  
+  .main-title {
+    font-size: 2.25rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+  
+  .wallet-info {
+    margin-top: 1rem;
+    font-size: 1.125rem;
+  }
+  

@@ -13,7 +13,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@rainbow-me/rainbowkit": "^2.2.4",
     "autoprefixer": "^10.4.21",
     "ethers": "^6.13.5",
     "next": "^15.2.2",
@@ -21,8 +20,6 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.0.14",
-    "viem": "^2.23.10",
-    "wagmi": "^2.14.13",
-    "web3": "^4.16.0"
+    "web3modal": "^1.9.12"
   }
 }
