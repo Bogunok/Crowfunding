@@ -5,6 +5,7 @@ blockchain/node_modules/
 blockchain/lib/
 blockchain/out/
 blockchain/cache/
+blockchain/metadata.json
 frontend/.next/
 frontend/out/
 backend/dist/
