@@ -35,11 +35,11 @@ contract StudentNFT is ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Mints a new NFT to the specified recipient with the given metadata URI. Only the owner can call this function.
+     * @dev Mints a new NFT to the specified recipient with the given metadata URI. **Anyone can call this function now.**
      * @param recipient The address to which the NFT will be minted.
      * @param ipfsMetadataURI The URI pointing to the NFT's metadata (e.g., on IPFS).
      */
-    function mintNFT(address recipient, string memory ipfsMetadataURI) public onlyOwner {
+    function mintNFT(address recipient, string memory ipfsMetadataURI) public {
         uint256 newItemId = _tokenIdCounter.current();
         _mint(recipient, newItemId);
         _setTokenURI(newItemId, ipfsMetadataURI);
@@ -83,11 +83,11 @@ contract StudentNFT is ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Safely mints a new NFT to the specified recipient with the given metadata URI, only when not paused. Only the owner can call this function.
+     * @dev Safely mints a new NFT to the specified recipient with the given metadata URI, only when not paused. **Anyone can call this function now.**
      * @param to The address to which the NFT will be minted.
      * @param ipfsMetadataURI The URI pointing to the NFT's metadata.
      */
-    function safeMint(address to, string memory ipfsMetadataURI) public onlyOwner whenNotPaused {
+    function safeMint(address to, string memory ipfsMetadataURI) public whenNotPaused {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);

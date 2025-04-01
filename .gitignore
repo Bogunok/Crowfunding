@@ -9,3 +9,5 @@ blockchain/metadata.json
 frontend/.next/
 frontend/out/
 backend/dist/
+flattened_student_nft.sol
+frontend/contracts
