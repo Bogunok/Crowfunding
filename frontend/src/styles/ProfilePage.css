@@ -1,0 +1,32 @@
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .profile-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  .profile-info {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    width: 400px; /* Adjust width as needed */
+    box-sizing: border-box;
+  }
+  
+  .profile-info p {
+    margin-bottom: 10px;
+  }
+  
+  .profile-info p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .profile-info strong {
+    font-weight: bold;
+    margin-right: 5px;
+  }

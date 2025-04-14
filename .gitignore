@@ -8,6 +8,10 @@ blockchain/cache/
 blockchain/metadata.json
 frontend/.next/
 frontend/out/
+frontend/eslint.config.js
+frontend/vite.config.js
 backend/dist/
-flattened_student_nft.sol
+StudentNFT-flattened.sol
 frontend/contracts
+.env
+.env.local

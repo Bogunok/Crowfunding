@@ -1,0 +1,74 @@
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.connect-wallet-message {
+    color: #718096;
+}
+
+.loading-message {
+    color: #4a5568;
+}
+
+.error-message {
+    color: #e53e3e;
+}
+
+.no-nfts-message {
+    color: #718096;
+}
+
+.nft-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.nft-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    overflow: hidden;
+}
+
+.nft-card-content {
+    padding: 1rem;
+}
+
+.nft-token-id {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.nft-image {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.nft-name {
+    color: #4a5568;
+    margin-bottom: 0.25rem;
+}
+
+.nft-description {
+    color: #718096;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.nft-metadata-not-found {
+    color: #a0aec0;
+    font-size: 0.875rem;
+}

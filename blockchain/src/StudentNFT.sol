@@ -46,15 +46,7 @@ contract StudentNFT is ERC721URIStorage, Ownable {
         _tokenIdCounter.increment();
     }
 
-    /**
-     * @dev Returns the URI for a given token ID, constructed from the base URI and the token ID.
-     * @param tokenId The ID of the token.
-     * @return string The URI of the token's metadata.
-     */
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-        return string(abi.encodePacked(_baseTokenURI, Strings.toString(tokenId), ".json"));
-    }
+    
 
     /**
      * @dev Allows the owner to withdraw any Ether accidentally sent to the contract.
@@ -92,5 +84,13 @@ contract StudentNFT is ERC721URIStorage, Ownable {
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, ipfsMetadataURI);
+    }
+
+    /**
+     * @dev Returns the total number of NFTs minted so far.
+     * @return uint256 The total number of minted NFTs.
+     */
+    function totalSupply() public view returns (uint256) {
+        return _tokenIdCounter.current();
     }
 }

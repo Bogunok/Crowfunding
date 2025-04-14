@@ -1,0 +1,139 @@
+/* frontend/src/styles/Navbar.css */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff; /* White background, like Rarible */
+  color: #1c1c1c; /* Dark text color, similar to Rarible */
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  height: 50px;
+  border-bottom: 1px solid #e0e0e0; /* Light border at the bottom */
+}
+
+.navbar-left {
+  height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.logo-link {
+  height:100%;
+  text-decoration: none;
+  color: inherit;
+  margin-right: 2rem; /* Space after the logo */
+}
+
+.logo {
+  height: 100px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.navbar-center {
+  display: flex;
+  align-items: center;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+  margin-left: 0.5rem; /* Adjusted spacing */
+  margin-right: 0.5rem; /* Adjusted spacing */
+  padding: 0.5rem 1rem;
+  border-radius: 8px; /* Slightly more rounded corners */
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  background-color: #f0f0f0; /* Light grey hover effect */
+  color: #333;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.connect-button {
+  background-color: #2979ff; /* Blue button, similar to Rarible's primary color */
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease-in-out;
+  margin-left: 0.5rem; /* Add some spacing */
+}
+
+.connect-button:hover {
+  background-color: #1e60c9; /* Darker blue on hover */
+}
+
+.profile-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px; /* Adjust size as needed */
+  height: 30px; /* Adjust size as needed */
+  border-radius: 50%; /* Makes it a circle */
+  background-color: #e0e0e0; /* Light grey background */
+  color: #333; /* Dark text color */
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 0.5rem; /* Add some spacing */
+  transition: background-color 0.2s ease-in-out;
+}
+
+.profile-button:hover {
+  background-color: #ccc;
+}
+
+/* Styles for Login and Sign Up buttons */
+.navbar-right .nav-link:nth-child(1) { /* Login button */
+  background-color: white;
+  color: #1c1c1c;
+  border: 1px solid #e0e0e0; /* Slight grey border */
+}
+
+.navbar-right .nav-link:nth-child(1):hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.navbar-right .nav-link:nth-child(2) { /* Sign Up button */
+  background-color: #1c1c1c; /* Black background */
+  color: white;
+}
+
+.navbar-right .nav-link:nth-child(2):hover {
+  background-color: #333; /* Slightly darker on hover */
+}
+
+/* Adjustments for the specific layout */
+.navbar-left {
+  flex-grow: 0; /* Don't let the left section grow */
+}
+
+.navbar-center {
+  flex-grow: 1; /* Allow the center section to take up available space */
+  display: flex;
+  justify-content: center; /* Center the links horizontally */
+}
+
+.navbar-right {
+  flex-grow: 0; /* Don't let the right section grow */
+  margin-left: 2rem; /* Add some space before the connect button */
+}
+
+.navbar-center .nav-link:first-child {
+  margin-left: 0; /* Remove left margin from the first center link */
+}
+
+.navbar-center .nav-link:last-child {
+  margin-right: 0; /* Remove right margin from the last center link */
+}
