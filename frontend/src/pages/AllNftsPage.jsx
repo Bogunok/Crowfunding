@@ -5,7 +5,7 @@ import { Web3Context } from '../context/Web3Context';
 import '../styles/AllNftsPage.css';
 import { Link } from 'react-router-dom'; 
 
-const CONTRACT_ADDRESS = '0x0D1eCdAd8DA0B7701CFC526a1DD12D59594Faa5c';
+const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
 
 function ViewNFTsPage() {
   const [mintedNFTs, setMintedNFTs] = useState([]);
@@ -19,7 +19,7 @@ function ViewNFTsPage() {
       if (isWalletConnected && signer) {
         try {
           const studentNFTContract = new ethers.Contract(
-            CONTRACT_ADDRESS,
+            STUDENTNFT_ADDRESS,
             StudentNFTABI,
             signer
           );
@@ -46,7 +46,7 @@ function ViewNFTsPage() {
           const totalSupply = await contract.totalSupply();
           console.log('Total Supply:', Number(totalSupply));
           const nfts = [];
-          for (let i = 0; i < Number(totalSupply); i++) {
+          for (let i = 1; i <= Number(totalSupply); i++) {
             const tokenId = i;
             console.log('Token ID:', tokenId);
             const tokenURI = await contract.tokenURI(tokenId);

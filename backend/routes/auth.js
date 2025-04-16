@@ -114,4 +114,26 @@ router.get('/users/:walletAddress', async (req, res) => {
   }
 });
 
+
+//get username
+router.get('/users/username/:walletAddress', async (req, res) => {
+  const { walletAddress } = req.params;
+
+  try {
+    const result = await pool.query(
+      'SELECT username FROM users WHERE wallet_address = $1',
+      [walletAddress]
+    );
+
+    if (result.rows.length > 0) {
+      res.json({ username: result.rows[0].username });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching username:', error);
+    res.status(500).json({ message: 'Error fetching username' });
+  }
+});
+
 export default router;

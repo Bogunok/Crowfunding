@@ -1,32 +1,58 @@
+.profile-page-container {
+  position: relative; /* Make the container a positioning context */
+  padding: 20px; /* Add some padding around the page */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logout-button.top-right {
+  position: absolute;
+  top: 10px; /* Adjust top position as needed */
+  right: 10px; /* Adjust right position as needed */
+  padding: 8px 15px;
+  background-color: #f44336; /* Example red color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  z-index: 10; /* Ensure it's above other content if needed */
+}
+
+.logout-button.top-right:hover {
+  background-color: #d32f2f;
+}
+
 .profile-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .profile-container h2 {
-    margin-bottom: 20px;
-  }
-  
-  .profile-info {
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 20px;
-    width: 400px; /* Adjust width as needed */
-    box-sizing: border-box;
-  }
-  
-  .profile-info p {
-    margin-bottom: 10px;
-  }
-  
-  .profile-info p:last-child {
-    margin-bottom: 0;
-  }
-  
-  .profile-info strong {
-    font-weight: bold;
-    margin-right: 5px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.profile-container h2 {
+  margin-bottom: 20px;
+}
+
+.profile-info {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  width: 400px; /* Adjust width as needed */
+  box-sizing: border-box;
+}
+
+.profile-info p {
+  margin-bottom: 10px;
+}
+
+.profile-info p:last-child {
+  margin-bottom: 0;
+}
+
+.profile-info strong {
+  font-weight: bold;
+  margin-right: 5px;
+}

@@ -1,127 +1,176 @@
-
 .nft-details-page {
-    padding: 20px;
-    background-color: #f4f4f4;
-    min-height: 100vh; /* Ensure the page takes up at least the full viewport height */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .page-title {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .nft-details-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    width: 80%;
-    max-width: 700px;
-    margin-bottom: 30px;
-  }
-  
-  .nft-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    margin-bottom: 20px;
-  }
-  
-  .nft-token-id {
-    font-size: 1.2rem;
-    color: #555;
-    margin-bottom: 10px;
-  }
-  
-  .nft-name {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 15px;
-  }
-  
-  .nft-description {
-    color: #666;
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
-  
-  .nft-metadata {
-    margin-bottom: 20px;
-    border-top: 1px solid #eee;
-    padding-top: 20px;
-  }
-  
-  .nft-metadata p {
-    color: #777;
-    margin-bottom: 5px;
-    font-size: 0.95rem;
-  }
-  
-  .nft-so-info {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-  }
-  
-  .nft-so-info h3 {
-    font-size: 1.1rem;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #444;
-  }
-  
-  .nft-so-info p {
-    color: #666;
-    margin-bottom: 5px;
-  }
-  
-  .nft-purchase-info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-top: 20px;
-  }
-  
-  .nft-price {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #28a745; /* Green color for price */
-  }
-  
-  .buy-button {
-    background-color: #007bff; /* Blue button */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-  }
-  
-  .buy-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .not-for-sale {
-    color: #dc3545; /* Red color for not for sale message */
-    font-weight: bold;
-    margin-top: 10px;
-  }
-  
-  .error-message {
-    color: #dc3545;
-    margin-top: 10px;
-  }
-  
-  .loading-message {
-    color: #007bff;
-    margin-top: 10px;
-  }
+  padding: 30px; /* Increased padding for more spacing */
+  background-color: #f8f9fa; /* Lighter background */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-title {
+  font-size: 3rem; /* Slightly larger title */
+  margin-bottom: 30px; /* More margin below title */
+  color: #343a40; /* Darker title color */
+  text-align: center; /* Center the title */
+}
+
+.nft-details-card {
+  background-color: #fff;
+  border-radius: 12px; /* More rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+  padding: 40px; /* Increased padding inside the card */
+  width: 90%; /* Slightly wider card by default */
+  max-width: 800px; /* Increased max width */
+  margin-bottom: 40px; /* More margin below card */
+}
+
+.nft-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px; /* More rounded image corners */
+  margin-bottom: 25px; /* More margin below image */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for the image */
+}
+
+.nft-token-id {
+  font-size: 1.1rem; /* Slightly smaller token ID */
+  color: #6c757d; /* Muted color for token ID */
+  margin-bottom: 15px; /* More margin below token ID */
+}
+
+.nft-name {
+  font-size: 2.2rem; /* Slightly larger NFT name */
+  font-weight: 600; /* Semi-bold font weight */
+  color: #212529; /* Darker name color */
+  margin-bottom: 20px; /* More margin below name */
+}
+
+.nft-description {
+  color: #495057; /* Darker description color */
+  line-height: 1.7; /* Improved line height for readability */
+  margin-bottom: 30px; /* More margin below description */
+}
+
+.nft-metadata {
+  margin-bottom: 30px; /* More margin below metadata */
+  border-top: 1px solid #e0e0e0; /* Slightly darker border */
+  padding-top: 25px; /* More padding above metadata */
+}
+
+.nft-metadata p {
+  color: #555; /* Slightly darker metadata text */
+  margin-bottom: 8px; /* More margin below metadata item */
+  font-size: 1rem; /* Slightly larger metadata font */
+}
+
+.nft-so-info {
+  margin-bottom: 30px; /* More margin below SO info */
+  padding: 20px; /* Increased padding for SO info */
+  border: 1px solid #ced4da; /* Slightly darker border */
+  border-radius: 8px; /* More rounded corners for SO info */
+  background-color: #f0f8ff; /* Light blue background for SO info */
+}
+
+.nft-so-info h3 {
+  font-size: 1.3rem; /* Slightly larger SO info title */
+  margin-top: 0;
+  margin-bottom: 15px; /* More margin below SO info title */
+  color: #343a40; /* Darker SO info title color */
+}
+
+.nft-so-info p {
+  color: #495057; /* Darker SO info text */
+  margin-bottom: 8px; /* More margin below SO info item */
+}
+
+.nft-purchase-info {
+  display: flex;
+  align-items: center;
+  gap: 30px; /* Increased gap */
+  margin-top: 30px; /* More margin above purchase info */
+}
+
+.nft-price {
+  font-size: 1.8rem; /* Slightly larger price */
+  font-weight: 700; /* Stronger bold for price */
+  color: #28a745; /* Green color for price */
+}
+
+.buy-button {
+  background-color: #007bff; /* Blue button */
+  color: white;
+  border: none;
+  padding: 12px 25px; /* Slightly larger button padding */
+  border-radius: 8px; /* More rounded button corners */
+  cursor: pointer;
+  font-size: 1.1rem; /* Slightly larger button font */
+  transition: background-color 0.3s ease;
+}
+
+.buy-button:hover {
+  background-color: #0056b3;
+}
+
+.not-for-sale {
+  color: #dc3545; /* Red color for not for sale message */
+  font-weight: bold;
+  margin-top: 15px; /* More margin above not for sale message */
+  font-size: 1.1rem;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.loading-message {
+  color: #007bff;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.nft-listing-actions {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start; /* Align buttons to the start */
+}
+
+.list-button,
+.delist-button {
+  background-color: #6c757d; /* Gray button for list/delist */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.list-button:hover,
+.delist-button:hover {
+  background-color: #545b62;
+}
+
+.nft-listing-actions > div {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.nft-listing-actions > div > p {
+  margin-bottom: 0;
+  font-weight: bold;
+  color: #007bff; /* Highlight the listing price */
+}
+
+.not-allowed-action {
+  color: #ffc107; /* Yellow color for not allowed message */
+  font-weight: bold;
+  margin-top: 15px;
+}

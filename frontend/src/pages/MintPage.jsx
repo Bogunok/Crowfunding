@@ -4,7 +4,7 @@ import StudentNFTABI from '../contracts/StudentNFT.json';
 import { Web3Context } from '../context/Web3Context';
 import '../styles/MintPage.css';
 
-const CONTRACT_ADDRESS = '0x0D1eCdAd8DA0B7701CFC526a1DD12D59594Faa5c';
+const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
 
 function MintPage() {
   const [imageFile, setImageFile] = useState(null);
@@ -19,7 +19,7 @@ function MintPage() {
       if (isWalletConnected && signer) {
         try {
           const studentNFTContract = new ethers.Contract(
-            CONTRACT_ADDRESS,
+            STUDENTNFT_ADDRESS,
             StudentNFTABI,
             signer
           );
@@ -98,7 +98,7 @@ function MintPage() {
       setMintingStatus('Minting in progress...');
       try {
         console.log('Minting NFT with metadata URI:', metadataURI);
-        const tx = await contract.mintNFT(address, metadataURI);
+        const tx = await contract.mintNFT(metadataURI);
         console.log('Transaction hash:', tx.hash);
         await tx.wait();
         setMintingStatus('NFT minted successfully!');

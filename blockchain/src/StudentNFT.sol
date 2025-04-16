@@ -6,91 +6,71 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract StudentNFT is ERC721URIStorage, Ownable {
+contract StudentNFT is ERC721URIStorage {
     using Counters for Counters.Counter;
+
     Counters.Counter private _tokenIdCounter;
+
+    /// @notice Base URI for the metadata of the NFTs.
     string private _baseTokenURI;
+      
+    /// @notice Contract URI for the collection metadata.
+    string private  _contractURI;
+
+
+    /// @notice Address of the marketplace contract that is approved to handle these NFTs.
+    address public marketplace;
+
+    mapping(uint256 => address) private _minters;
+
+    /// @dev Emitted when a new NFT is minted.
+    /// @param tokenId The ID of the newly minted NFT.
+    /// @param tokenURI The URI pointing to the metadata of the NFT.
+    /// @param marketplace The address of the marketplace contract.
+    /// @param minter The address that minted the NFT.
+    event MintedNFT(uint256 indexed tokenId, string tokenURI, address marketplace, address minter);
 
     /**
-     * @dev Constructor to set the name and symbol of the NFT collection.
-     * @param name_ The name of the NFT collection (e.g., "Student Certificates").
-     * @param symbol_ The symbol of the NFT collection (e.g., "SFT").
+     * @dev Constructor to set the name, symbol of the NFT collection, and marketplace address.
+     * @param _marketplaceAddress The address of the marketplace contract that will be allowed to operate on these NFTs.
      */
-    constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) Ownable() {}
-
-    /**
-     * @dev Returns the base URI for token metadata.
-     * @return string The base URI.
-     */
-    function _baseURI() internal view override returns (string memory) {
-        return _baseTokenURI;
+    constructor(address _marketplaceAddress) ERC721("Crowfunding", "CROW") {
+        marketplace = _marketplaceAddress;
     }
 
-    /**
-     * @dev Sets the base URI for token metadata. Only the owner can call this function.
-     * @param baseTokenURI_ The new base URI to set.
-     */
-    function setBaseTokenURI(string memory baseTokenURI_) public onlyOwner {
-        _baseTokenURI = baseTokenURI_;
-    }
 
     /**
-     * @dev Mints a new NFT to the specified recipient with the given metadata URI. **Anyone can call this function now.**
-     * @param recipient The address to which the NFT will be minted.
+     * @dev Mints a new NFT to the caller with the given metadata URI.
+     * The marketplace address is automatically approved to handle this NFT.
      * @param ipfsMetadataURI The URI pointing to the NFT's metadata (e.g., on IPFS).
+     * @return newItemId The ID of the newly minted NFT.
      */
-    function mintNFT(address recipient, string memory ipfsMetadataURI) public {
+    function mintNFT(string memory ipfsMetadataURI) external returns (uint256) {
+        _tokenIdCounter.increment();
         uint256 newItemId = _tokenIdCounter.current();
-        _mint(recipient, newItemId);
+        _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, ipfsMetadataURI);
-        _tokenIdCounter.increment();
-    }
+        setApprovalForAll(marketplace, true);
+        _minters[newItemId] = msg.sender; // Store the address of the account that minted this token.
+        emit MintedNFT(newItemId, ipfsMetadataURI, marketplace, msg.sender);
+        return newItemId;
 
-    
-
-    /**
-     * @dev Allows the owner to withdraw any Ether accidentally sent to the contract.
-     */
-    function withdraw() public onlyOwner {
-        (bool success, ) = payable(owner()).call{value: address(this).balance}("");
-        require(success, "Transfer failed.");
-    }
-
-    bool public paused = false;
-
-    /**
-     * @dev Modifier to check if the contract is not paused.
-     */
-    modifier whenNotPaused() {
-        require(!paused, "Pausable: paused");
-        _;
     }
 
     /**
-     * @dev Allows the owner to pause or unpause the minting of new NFTs.
-     * @param state True to pause, false to unpause.
-     */
-    function setPaused(bool state) public onlyOwner {
-        paused = state;
-    }
-
-    /**
-     * @dev Safely mints a new NFT to the specified recipient with the given metadata URI, only when not paused. **Anyone can call this function now.**
-     * @param to The address to which the NFT will be minted.
-     * @param ipfsMetadataURI The URI pointing to the NFT's metadata.
-     */
-    function safeMint(address to, string memory ipfsMetadataURI) public whenNotPaused {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
-        _setTokenURI(tokenId, ipfsMetadataURI);
-    }
-
-    /**
-     * @dev Returns the total number of NFTs minted so far.
-     * @return uint256 The total number of minted NFTs.
+     * @dev Returns the total number of NFTs that have been minted by this contract.
+     * @return The total number of minted NFTs.
      */
     function totalSupply() public view returns (uint256) {
         return _tokenIdCounter.current();
     }
+
+    function baseTokenURI() public view returns (string memory) {
+        return _baseTokenURI;
+    }
+
+    function contractURI() public view returns (string memory) {
+        return _contractURI;
+    }
+
 }

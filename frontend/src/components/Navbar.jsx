@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useWallet } from '../context/Web3Context.jsx';
 import '../styles/Navbar.css';
 
-export default function Navbar({ isLoggedIn }) {
+export default function Navbar({ isLoggedIn, userRole }) {
   const { address, connectWallet } = useWallet();
 
   return (
@@ -13,10 +13,15 @@ export default function Navbar({ isLoggedIn }) {
           <div className="logo">Crowfunding</div>
         </Link>
       </div>
+      
       <div className="navbar-center">
+        {isLoggedIn && userRole!== 'student' && (
         <Link to="/mint" className="nav-link">Mint NFT</Link>
+        )}
         <Link to="/all-nfts" className="nav-link">Explore NFTs</Link>
+        <Link to="/listings" className="nav-link">Listings</Link>
       </div>
+
       <div className="navbar-right">
       <Link to="/login" className="nav-link">Login</Link>
       <Link to="/signin" className="nav-link">Sign in</Link>
@@ -26,8 +31,9 @@ export default function Navbar({ isLoggedIn }) {
         {isLoggedIn && (
           <Link to="/profile" className="profile-button">
             {/* You can add an icon or initials here if you want */}
-            P
+            Profile
           </Link>
+          
         )}
       </div>
     </nav>
