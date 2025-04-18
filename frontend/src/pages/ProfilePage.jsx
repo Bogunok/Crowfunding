@@ -123,7 +123,7 @@ function ProfilePage({ user, onLogout }) {
 
   return (
     <div className="profile-page-container"> {/* Main container */}
-      <button onClick={handleLogoutClick} className="logout-button top-right">Logout</button> {/* Logout button */}
+      <button onClick={handleLogoutClick} className="logout-button top-right">Logout</button>
       <div className="profile-container">
         <h2>User Profile</h2>
         <div className="profile-info">
@@ -132,7 +132,7 @@ function ProfilePage({ user, onLogout }) {
         </div>
 
         <div className="minted-nfts-section">
-          <h3>Your Minted NFTs</h3>
+        <h3>{user.role === 'student' ? 'Your NFTs' : 'Your Minted NFTs'}</h3>
           {mintedNFTs.length === 0 ? (
             <p className="no-nfts-message">You haven't minted any NFTs yet.</p>
           ) : (
