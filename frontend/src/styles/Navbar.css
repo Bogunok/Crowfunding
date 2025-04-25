@@ -1,16 +1,15 @@
-/* frontend/src/styles/Navbar.css */
-
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff; /* White background, like Rarible */
-  color: #1c1c1c; /* Dark text color, similar to Rarible */
+  background-color: #fff; 
+  color: #1c1c1c;
   padding: 1rem 2rem;
   position: sticky;
   top: 0;
   height: 50px;
   border-bottom: 1px solid #e0e0e0; /* Light border at the bottom */
+  z-index: 10;
 }
 
 .navbar-left {
@@ -59,7 +58,7 @@
 }
 
 .connect-button {
-  background-color: #2979ff; /* Blue button, similar to Rarible's primary color */
+  background-color: #2979ff;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -78,7 +77,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.75rem 1.5rem; /* Made consistent padding */
+  padding: 0.75rem 1.5rem; 
   border-radius: 8px; /* Makes it rounded */
   background-color: #e0e0e0; /* Light grey background */
   color: #333; /* Dark text color */

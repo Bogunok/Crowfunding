@@ -28,7 +28,7 @@
 
 .nft-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
 }
 
@@ -37,6 +37,8 @@
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     overflow: hidden;
+    max-width: 300px;
+    max-height: 450px;
 }
 
 .nft-card-content {
@@ -55,6 +57,7 @@
     height: auto;
     border-radius: 0.5rem;
     margin-bottom: 0.5rem;
+    aspect-ratio: 1 / 1; /* Maintain a square aspect ratio */
 }
 
 .nft-name {

@@ -1,6 +1,3 @@
-import express from 'express';
-import multer from 'multer';
-import dotenv from 'dotenv';
 import { create } from 'ipfs-http-client';
 
 const ipfs = create({ url: 'http://localhost:5001' }); // Default IPFS HTTP API port
@@ -8,7 +5,7 @@ const ipfs = create({ url: 'http://localhost:5001' }); // Default IPFS HTTP API 
 async function uploadImageToIPFS(file) {
   try {
     const added = await ipfs.add(file.buffer, {
-      pin: true, // Pin the content to your local node
+      pin: true, 
       progress: (prog) => console.log(`received: ${prog}`),
     });
     const imageCid = `ipfs://${added.cid}`;

@@ -7,6 +7,8 @@ blockchain/cache/
 blockchain/metadata.json
 blockchain/flattened_marketplace.sol
 blockchain/flattened_studentnft.sol
+blockchain/flattened_auction.sol
+blockchain/flattened_auctionfactory.sol
 frontend/node_modules/
 frontend/.next/
 frontend/out/

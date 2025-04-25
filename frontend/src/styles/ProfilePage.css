@@ -1,51 +1,62 @@
+/* Overall page container */
 .profile-page-container {
-  position: relative; /* Make the container a positioning context */
-  padding: 20px; /* Add some padding around the page */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative; /* Keep for absolute positioning context (logout button) */
+  /* padding: 20px;     Padding around the entire page content */
+  width: 100%;       /* Ensure it takes full width for centering children */
+  box-sizing: border-box;
 }
 
+/* Logout Button - No change needed */
 .logout-button.top-right {
   position: absolute;
-  top: 10px; /* Adjust top position as needed */
-  right: 10px; /* Adjust right position as needed */
+  top: 20px;  /* Adjusted slightly to match container padding */
+  right: 20px; /* Adjusted slightly to match container padding */
   padding: 8px 15px;
-  background-color: #f44336; /* Example red color */
+  background-color: #f44336;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-  z-index: 10; /* Ensure it's above other content if needed */
 }
 
 .logout-button.top-right:hover {
   background-color: #d32f2f;
 }
 
+/* Container for Profile Info + NFT List */
 .profile-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+   flex-direction: column; /* Stack children vertically: Info first, then NFTs */
+  align-items: center;   /* Center children horizontally (Info block and NFT list) */
+  width: 100%;           /* Take full width within page padding */
+  gap: 40px;             /* Add space between the profile info and the NFT list */
 }
 
-.profile-container h2 {
-  margin-bottom: 20px;
-}
-
+/* User Information Block */
 .profile-info {
   background-color: #f9f9f9;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-  width: 400px; /* Adjust width as needed */
+  border-radius: 8px;   /* Slightly more rounded */
+  padding: 30px;        /* More padding */
+  width: 100%;          /* Allow width flexibility */
+  max-width: 500px;     /* Max width for readability */
   box-sizing: border-box;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
+  text-align: center; /* Center text inside the info box */
+}
+
+.profile-info h2 { /* Style the title within the info box */
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #333;
 }
 
 .profile-info p {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  font-size: 1.1rem; /* Slightly larger text */
+  color: #555;
+  line-height: 1.6;
 }
 
 .profile-info p:last-child {
@@ -53,6 +64,80 @@
 }
 
 .profile-info strong {
-  font-weight: bold;
-  margin-right: 5px;
+  font-weight: 600; /* Slightly bolder */
+  margin-right: 8px;
+  color: #111;
+}
+
+/* --- NFT Section --- */
+
+/* Optional Title for NFT Section */
+.nft-section-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center; /* Center the title */
+    width: 100%;        /* Ensure it spans width for centering */
+}
+
+
+/* Container for the list of NFT cards */
+.nft-list-container {
+  display: flex;          /* Enable flexbox */
+  flex-wrap: wrap;        /* Allow items to wrap to the next line */
+  justify-content: center; /* Center items horizontally */
+  gap: 25px;              /* Space between NFT cards (adjust as needed) */
+  padding: 20px 0;        /* Add vertical padding */
+  width: 100%;            /* Take full width */
+  max-width: 1200px;      /* Optional: constrain max width */
+}
+
+/* Individual NFT Card Styling (Example) */
+.nft-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  flex-basis: calc(20% - 25px); /* 5 cards per row minus gap */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.nft-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nft-card img { /* Style the image within the card */
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: #f0f0f0; /* Placeholder bg color */
+    min-height: 100px; /* Ensure image area has some height even if loading */
+}
+
+.nft-card h4 { /* Style the NFT name/title */
+    margin: 10px 0 5px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.nft-card p { /* Style other NFT details */
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+/* Loading/Error States (Keep or adapt as needed) */
+.loading-message, .error-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.error-message {
+    color: #dc3545; /* Bootstrap danger color */
 }

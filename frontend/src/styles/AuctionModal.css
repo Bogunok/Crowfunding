@@ -1,0 +1,226 @@
+/* Modal Backdrop */
+.modal-backdrop {
+    position: fixed; /* Stay in place */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+    display: flex;
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    z-index: 1000; /* Ensure it's on top */
+    padding: 1rem; /* Add padding for smaller screens */
+  }
+  
+  /* Modal Content Area */
+  .modal-content {
+    background-color: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 550px; /* Max width of the modal */
+    position: relative; /* Needed for absolute positioning of close button */
+    max-height: 90vh; /* Limit height and enable scrolling if needed */
+    overflow-y: auto; /* Add scroll for tall content */
+  }
+  
+  /* Modal Title */
+  .modal-content h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #343a40;
+    font-weight: 600;
+  }
+  
+  /* Modal Close Button */
+  .modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #6c757d;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.5rem;
+  }
+  
+  .modal-close-button:hover {
+    color: #343a40;
+  }
+  .modal-close-button:disabled {
+      color: #adb5bd;
+      cursor: not-allowed;
+  }
+  
+  
+  /* Form Styling */
+  .modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Spacing between form groups */
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.95rem;
+  }
+  
+  /* Input and Select Styling */
+  .modal-content input[type="number"],
+  .modal-content select {
+    padding: 10px 12px; /* Slightly more padding */
+    border: 1px solid #ced4da; /* Standard border */
+    border-radius: 4px;
+    width: 100%; /* Full width */
+    box-sizing: border-box; /* Include padding/border in width */
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .modal-content input[type="number"]:focus,
+  .modal-content select:focus {
+    border-color: #80bdff; /* Blue border on focus */
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Blue glow */
+  }
+  
+  .modal-content input[type="number"]:disabled,
+  .modal-content select:disabled {
+      background-color: #e9ecef; /* Grey out disabled fields */
+      cursor: not-allowed;
+  }
+  
+  
+  /* Date Picker Specific Input Styling */
+  .date-picker-input {
+    padding: 10px 12px;      /* Match other inputs */
+    border: 1px solid #ced4da; /* Match other inputs */
+    border-radius: 4px;
+    width: 100%;             /* Use 100% with box-sizing */
+    box-sizing: border-box;  /* Include padding/border in width */
+    margin-top: 0;           /* Remove default margin if label handles it */
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Add focus transition */
+    /* Appearance reset for iOS */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  /* Focus state consistent with other inputs */
+  .date-picker-input:focus {
+     border-color: #80bdff;
+     outline: 0;
+     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  .date-picker-input:disabled {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+  }
+  
+  
+  /* Adjust react-datepicker styles if needed */
+  .react-datepicker-popper {
+    z-index: 1010; /* Ensure datepicker appears above modal backdrop (1000) */
+  }
+  /* Optional: Style the calendar container */
+  .react-datepicker {
+      font-size: 0.9rem; /* Slightly smaller font in calendar */
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  
+  /* Warning text style */
+  .warning {
+      color: #856404; /* Bootstrap warning text color */
+      background-color: #fff3cd; /* Bootstrap warning background color */
+      border: 1px solid #ffeeba; /* Bootstrap warning border color */
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1rem; /* Consistent spacing */
+      margin-top: 0.5rem; /* Add top margin if needed */
+      border-radius: 0.25rem;
+      font-size: 0.9em;
+      width: 100%; /* Take full width */
+      box-sizing: border-box;
+  }
+  
+  /* Error message styling (within modal) */
+  .modal-content .error-message {
+      color: #721c24; /* Darker red for contrast on white */
+      background-color: #f8d7da; /* Light red background */
+      border: 1px solid #f5c6cb; /* Red border */
+      padding: 0.75rem 1.25rem;
+      margin-top: 10px;
+      margin-bottom: 0; /* Remove default bottom margin if button follows */
+      font-size: 0.9em;
+      border-radius: 4px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center; /* Center error text */
+  }
+  
+  /* Info text styling */
+  .info-text {
+      font-size: 0.85em; /* Slightly smaller */
+      color: #6c757d; /* Grayish text */
+      margin-top: 5px;
+      padding-left: 2px; /* Slight indent */
+  }
+  
+  
+  /* Submit Button */
+  .submit-button {
+    padding: 0.8rem 1.5rem;
+    background-color: #28a745; /* Green for create/submit */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 1rem; /* Space above the button */
+    width: 100%; /* Full width button */
+  }
+  
+  .submit-button:hover:not(:disabled) {
+    background-color: #218838; /* Darker green */
+  }
+  
+  .submit-button:disabled {
+    background-color: #adb5bd; /* Grey out when disabled */
+    cursor: not-allowed;
+  }
+  
+  /* Responsive Adjustments for Modal */
+  @media (max-width: 600px) {
+      .modal-content {
+          padding: 1.5rem;
+          max-width: 95%; /* Allow slightly wider on small screens */
+      }
+      .modal-content h2 {
+          font-size: 1.3rem;
+      }
+      .submit-button {
+          font-size: 1rem;
+          padding: 0.7rem 1rem;
+      }
+      .date-picker-input,
+      .modal-content input[type="number"],
+      .modal-content select {
+          font-size: 0.95rem; /* Slightly smaller font on mobile */
+      }
+  }

@@ -20,6 +20,7 @@ export default function Navbar({ isLoggedIn, userRole }) {
         )}
         <Link to="/all-nfts" className="nav-link">Explore NFTs</Link>
         <Link to="/listings" className="nav-link">Listings</Link>
+        <Link to="/auctions" className="nav-link">Auctions</Link>
       </div>
 
       <div className="navbar-right">
@@ -30,7 +31,6 @@ export default function Navbar({ isLoggedIn, userRole }) {
         </button>
         {isLoggedIn && (
           <Link to="/profile" className="profile-button">
-            {/* You can add an icon or initials here if you want */}
             Profile
           </Link>
           

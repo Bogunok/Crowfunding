@@ -64,7 +64,6 @@ function ListingsPage() {
           for (const listing of activeListings) {
             const { nftContractAddress, tokenId, price, seller, isListed } = listing;
 
-            // Ensure the NFT contract address matches the one we're interested in
             if (nftContractAddress.toLowerCase() === STUDENTNFT_ADDRESS.toLowerCase() && !isListed) {
               try {
                 const tokenURI = await nftContract.tokenURI(tokenId);
@@ -86,7 +85,7 @@ function ListingsPage() {
                 }
 
                 listings.push({
-                  listingId: Number(tokenId), // Using tokenId as listingId since getAllActiveListings doesn't return the listingId
+                  listingId: Number(tokenId), 
                   tokenId: Number(tokenId),
                   price: ethers.formatEther(price),
                   seller: sellerUsername,
@@ -165,7 +164,7 @@ function ListingsPage() {
         <div className="nft-grid">
           {listedNFTs.map((nft) => (
             <div key={nft.listingId} className="nft-card">
-              <Link to={`/nft/${nft.tokenId}`}>
+              <Link to={`/nfts/${nft.tokenId}`}>
                 {nft.imageUri && (
                   <img
                     src={`http://localhost:8080/ipfs/${nft.imageUri}`}

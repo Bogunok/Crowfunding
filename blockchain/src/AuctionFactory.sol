@@ -14,7 +14,7 @@ contract AuctionFactory {
         address nftAddress;
         uint256 tokenId;
         address originalCreator;
-        uint256 creationTime;
+        uint256 startTime;
         uint256 endTime;
     }
 
@@ -32,7 +32,8 @@ contract AuctionFactory {
      * @notice Creates a new auction.
      * @param _nftAddress The address of the NFT contract.
      * @param _tokenId The ID of the NFT being auctioned.
-     * @param _duration The duration of the auction in seconds.
+     * @param _startTime The start time of the auction.
+     * @param _endTime The end time of the auction.
      * @param _instantBuyPrice The price for an instant buy.
      * @param _startPrice The starting price of the auction.
      * @return The address of the newly created Auction contract.
@@ -40,7 +41,8 @@ contract AuctionFactory {
     function createAuction(
         address _nftAddress,
         uint256 _tokenId,
-        uint256 _duration,
+        uint256 _startTime,
+        uint256 _endTime,
         uint256 _instantBuyPrice,
         uint256 _startPrice
     ) external returns (address) {
@@ -51,7 +53,8 @@ contract AuctionFactory {
         Auction newAuction = new Auction(
             _nftAddress,
             _tokenId,
-            _duration,
+            _startTime,
+            _endTime,
             _instantBuyPrice,
             _startPrice,
             originalCreator // Pass the original creator's address
@@ -65,15 +68,14 @@ contract AuctionFactory {
             nftAddress: _nftAddress,
             tokenId: _tokenId,
             originalCreator: originalCreator,
-            creationTime: block.timestamp,
-            endTime: block.timestamp + _duration
+            startTime: _startTime,
+            endTime: _endTime
         });
 
         auctions[auctionAddress] = auctionInfo; // Map the auction address to the info
         activeAuctions.push(auctionAddress);     // Add to the active auctions array
         isAuctionActive[auctionAddress] = true;  // Mark as active
 
-        // Emit an event
         emit AuctionCreated(originalCreator, auctionAddress, _nftAddress, _tokenId);
 
         return auctionAddress; // Return the address of the new auction contract
@@ -148,19 +150,21 @@ contract AuctionFactory {
      * @param _auctionAddress The address of the auction to move.
      */
     function markAuctionEnded(address _auctionAddress) external {
-        require(msg.sender == _auctionAddress, "Only the auction contract can call this"); //Important security check
-        require(isAuctionActive[_auctionAddress], "Auction is not active");
+        AuctionInfo storage info = auctions[_auctionAddress];
+        require(info.auctionAddress != address(0), "Auction does not exist");
+        require(msg.sender == info.originalCreator, "Only the original auction creator can call this");
+            require(isAuctionActive[_auctionAddress], "Auction is not active");
 
-        // Remove from active auctions array
-        for (uint256 i = 0; i < activeAuctions.length; i++) {
-            if (activeAuctions[i] == _auctionAddress) {
-                activeAuctions[i] = activeAuctions[activeAuctions.length - 1];
-                activeAuctions.pop();
-                break;
+            // Remove from active auctions array
+            for (uint256 i = 0; i < activeAuctions.length; i++) {
+                if (activeAuctions[i] == _auctionAddress) {
+                    activeAuctions[i] = activeAuctions[activeAuctions.length - 1];
+                    activeAuctions.pop();
+                    break;
+                }
             }
-        }
-        endedAuctions.push(_auctionAddress);  // Add to ended auctions
-        isAuctionActive[_auctionAddress] = false; // Update status
+            endedAuctions.push(_auctionAddress);  // Add to ended auctions
+            isAuctionActive[_auctionAddress] = false; // Update status
     }
 
      /**
@@ -168,19 +172,21 @@ contract AuctionFactory {
      * @param _auctionAddress The address of the auction to move.
      */
     function markAuctionCancelled(address _auctionAddress) external {
-        require(msg.sender == _auctionAddress, "Only the auction contract can call this"); //Important security check
-        require(isAuctionActive[_auctionAddress], "Auction is not active");
+        AuctionInfo storage info = auctions[_auctionAddress];
+        require(info.auctionAddress != address(0), "Auction does not exist");
+        require(msg.sender == info.originalCreator, "Only the original auction creator can call this");
+            require(isAuctionActive[_auctionAddress], "Auction is not active");
 
-        // Remove from active auctions array
-        for (uint256 i = 0; i < activeAuctions.length; i++) {
-            if (activeAuctions[i] == _auctionAddress) {
-                activeAuctions[i] = activeAuctions[activeAuctions.length - 1];
-                activeAuctions.pop();
-                break;
+            // Remove from active auctions array
+            for (uint256 i = 0; i < activeAuctions.length; i++) {
+                if (activeAuctions[i] == _auctionAddress) {
+                    activeAuctions[i] = activeAuctions[activeAuctions.length - 1];
+                    activeAuctions.pop();
+                    break;
+                }
             }
-        }
-        endedAuctions.push(_auctionAddress);  // Add to ended auctions.  We treat cancelled as ended.
-        isAuctionActive[_auctionAddress] = false; // Update status
+            endedAuctions.push(_auctionAddress);  // Add to ended auctions.  We treat cancelled as ended.
+            isAuctionActive[_auctionAddress] = false; // Update status
     }
 }
 

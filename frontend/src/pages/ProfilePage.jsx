@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import StudentNFTABI from '../contracts/StudentNFT.json';
 import { Web3Context } from '../context/Web3Context';
 import '../styles/ProfilePage.css';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom'; 
 
 const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
 
@@ -13,7 +13,7 @@ function ProfilePage({ user, onLogout }) {
   const [error, setError] = useState(null);
   const [contract, setContract] = useState(null);
   const { signer, isWalletConnected } = useContext(Web3Context);
-  const navigate = useNavigate(); // Get navigate function
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     async function initializeContract() {
@@ -132,7 +132,7 @@ function ProfilePage({ user, onLogout }) {
         </div>
 
         <div className="minted-nfts-section">
-        <h3>{user.role === 'student' ? 'Your NFTs' : 'Your Minted NFTs'}</h3>
+        <h2>{user.role === 'student' ? 'Your NFTs' : 'Your Minted NFTs'}</h2>
           {mintedNFTs.length === 0 ? (
             <p className="no-nfts-message">You haven't minted any NFTs yet.</p>
           ) : (

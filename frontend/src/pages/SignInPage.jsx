@@ -1,4 +1,3 @@
-// frontend/src/components/SignupPage.js
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Web3Context } from '../context/Web3Context.jsx'; 
@@ -48,7 +47,7 @@ function SignInPage() {
 
       if (response.ok) {
         console.log('Registration successful:', data);
-        navigate('/'); // Redirect to the homepage or another page after successful registration
+        navigate('/'); // Redirect to the homepage after successful registration
       } else {
         console.error('Registration failed:', data);
         setError(data.error || 'Registration failed');

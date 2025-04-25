@@ -29,7 +29,6 @@ contract Auction is ReentrancyGuard {
     IERC721 public nft;              ///< @notice The ERC-721 NFT contract.
     uint256 public tokenId;          ///< @notice The ID of the NFT being auctioned.
     address public originalCreator;  ///< @notice The address of the user who created the auction.
-    uint256 public creationTime;     ///< @notice The time when the auction contract was created.
     uint256 public startTime;        ///< @notice The time when the auction starts.
     uint256 public endTime;          ///< @notice The time when the auction ends.
     uint256 public instantBuyPrice;  ///< @notice The price for an instant buy.
@@ -41,6 +40,9 @@ contract Auction is ReentrancyGuard {
     Bid[] public bids;               ///< @notice Array of all bids placed in the auction.
 
     // --- Events ---
+
+     /// @notice Emitted when a new auction is created.
+    event AuctionCreated(uint256 startTime, uint256 endTime);
 
     /// @notice Emitted when a bid is placed.
     event BidPlaced(address indexed bidder, uint256 amount);
@@ -85,36 +87,44 @@ contract Auction is ReentrancyGuard {
     /// @notice Constructor for the Auction contract.
     /// @param _nftAddress The address of the NFT contract.
     /// @param _tokenId The ID of the NFT being auctioned.
-    /// @param _duration The duration of the auction in seconds.
+    /// @param _startTime The time when the auction starts.
+    /// @param _endTime The time when the auction ends.
     /// @param _instantBuyPrice The price for an instant buy.
     /// @param _startPrice The starting price of the auction.
     /// @param _originalCreator The address of the user who created the auction.
     constructor(
         address _nftAddress,
         uint256 _tokenId,
-        uint256 _duration,
+        uint256 _startTime,
+        uint256 _endTime,
         uint256 _instantBuyPrice,
         uint256 _startPrice,
         address _originalCreator // Accept the original creator's address
     ) {
         require(_nftAddress != address(0), "NFT address cannot be zero");
-        require(_tokenId > 0, "Token ID must be greater than zero");
-        require(_duration > 0, "Auction duration must be greater than zero");
         require(_instantBuyPrice > _startPrice, "Instant buy price must be greater than start price");
-        require(_startPrice > 0, "Start price must be greater than zero");
 
         nft = IERC721(_nftAddress);
         tokenId = _tokenId;
         originalCreator = _originalCreator;
-        creationTime = block.timestamp;
-        startTime = block.timestamp;
-        endTime = block.timestamp + _duration;
+        startTime = _startTime;
+        endTime = _endTime;
         instantBuyPrice = _instantBuyPrice;
         startPrice = _startPrice;
-
-        // It's crucial to transfer the NFT ownership to the Auction contract here
-        IERC721(_nftAddress).transferFrom(_originalCreator, address(this), _tokenId);
     }
+
+
+    function startAuction(address _originalCreator) external {
+        require(_originalCreator == originalCreator, "Only the auction creator can start the auction");
+        require(block.timestamp >= startTime, "Start time is not reached yet");
+        require(block.timestamp < endTime, "End time is in the past");
+
+        // Transfer the NFT to the auction contract
+        nft.transferFrom(originalCreator, address(this), tokenId);
+
+        emit AuctionCreated(startTime, endTime);
+    }
+
 
     /// @notice Places a bid on the auction.
     /// @dev Refunds the previous highest bidder if a new higher bid is placed.
@@ -208,6 +218,12 @@ contract Auction is ReentrancyGuard {
             (bool success, ) = payableHighestBidder.call{value: amountToRefund}("");
             require(success, "Refund to highest bidder failed");
         }
+    }
+
+    /// @notice Gets all bids placed in the auction.
+    /// @return An array of Bid structs representing all bids.
+    function getAllBids() external view returns (Bid[] memory) {
+        return bids;
     }
 
     /// @notice Gets the current state of the auction.

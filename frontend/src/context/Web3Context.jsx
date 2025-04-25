@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
 
-// Create the context
 export const Web3Context = createContext({
   provider: null,
   signer: null,
@@ -11,7 +10,7 @@ export const Web3Context = createContext({
   isWalletConnected: false,
 });
 
-// Create the context provider component
+// context provider component
 export const Web3ContextProvider = ({ children }) => {
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
@@ -21,7 +20,6 @@ export const Web3ContextProvider = ({ children }) => {
   const connectWallet = useCallback(async () => {
     if (window.ethereum) {
       try {
-        // Request account access if needed
         await window.ethereum.request({ method: 'eth_requestAccounts' });
 
         // Create a new provider using the browser's Ethereum provider
@@ -42,7 +40,6 @@ export const Web3ContextProvider = ({ children }) => {
       }
     } else {
       console.log('Please install MetaMask!');
-      // Optionally, you can redirect the user to install MetaMask
     }
   }, []);
 
@@ -60,8 +57,13 @@ export const Web3ContextProvider = ({ children }) => {
       if (window.ethereum) {
         try {
           const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          console.log('Existing accounts:', accounts);
           if (accounts.length > 0) {
-            await connectWallet(); // Re-establish connection if accounts exist
+            const newProvider = new ethers.BrowserProvider(window.ethereum);
+            setProvider(newProvider);
+            setAddress(accounts[0].address);
+            setIsWalletConnected(true);
+            const newSigner = await newProvider.getSigner();
           }
         } catch (error) {
           console.error('Error checking existing accounts:', error);
@@ -81,14 +83,12 @@ export const Web3ContextProvider = ({ children }) => {
         }
       });
 
-      window.ethereum.on('chainChanged', (_chainId) => {
-        // Handle chain ID change if needed (e.g., reload the page)
-        window.location.reload();
-      });
+      // window.ethereum.on('chainChanged', (_chainId) => {
+      //   window.location.reload();
+      // });
     }
 
     return () => {
-      // Clean up event listeners if needed
       if (window.ethereum) {
         window.ethereum.removeAllListeners('accountsChanged');
         window.ethereum.removeAllListeners('chainChanged');

@@ -81,7 +81,6 @@ router.post('/login', async (req, res) => {
 
     if (passwordMatch && walletMatch) {
       // Authentication successful
-      // You would typically generate a session or JWT here for persistent login
       return res.status(200).json({ message: 'Login successful', user: { id: user.id, username: user.username, wallet_address: user.wallet_address, role: user.role } });
     } else {
       return res.status(401).json({ error: 'Invalid credentials' }); // Password or wallet address doesn't match

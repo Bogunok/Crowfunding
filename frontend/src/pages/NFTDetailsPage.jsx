@@ -19,7 +19,7 @@ function NFTDetailsPage() {
   const [userRole, setUserRole] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isListed, setIsListed] = useState(false);
-  const [listingPrice, setListingPrice] = useState(null); 
+  const [listingPrice, setListingPrice] = useState(null);
   const [marketplaceContract, setMarketplaceContract] = useState(null);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ function NFTDetailsPage() {
           let ownerUsername = owner; // Default to wallet address if username not found
           // Fetch SO name using the owner's wallet address
           try {
-            const usernameResponse = await fetch(`http://localhost:5000/api/auth/users/username/${owner}`); // Adjust the API endpoint if needed
+            const usernameResponse = await fetch(`http://localhost:5000/api/auth/users/username/${owner}`); 
             if (usernameResponse.ok) {
               const usernameData = await usernameResponse.json();
               ownerUsername = usernameData.username;
@@ -108,7 +108,7 @@ function NFTDetailsPage() {
           const response = await fetch(`http://localhost:5000/api/auth/users/${currentWalletAddress}`);
           if (response.ok) {
             const userData = await response.json();
-            setUserRole(userData.role); // Assuming your backend returns a 'role' field
+            setUserRole(userData.role); 
           } else {
             console.error('Failed to fetch user role:', response.status);
             setUserRole(null);
@@ -159,17 +159,28 @@ function NFTDetailsPage() {
     if (!listingPrice) {
     setError('This NFT is not for sale or price is not loaded.');
     return;
+    }
+
+  if (userRole !== 'student') {
+    setError('Only students can buy NFTs.');
+    return;
   }
 
-    // In a real scenario, you would interact with a marketplace contract here
-    // to transfer the NFT and the price.
-    console.log(`Buying NFT with tokenId: ${tokenId} for price: ${nftDetails.price}`);
-    alert(`Buying NFT with tokenId: ${tokenId} for price: ${nftDetails.price} (Implementation pending)`);
-
-    // You would typically:
-    // 1. Approve the marketplace contract to spend the buyer's funds (if needed).
-    // 2. Call a function on the marketplace contract to execute the purchase.
-    // 3. Handle transaction success and failure.
+  setLoading(true);
+  try {
+  
+    const priceInWei = ethers.parseEther(listingPrice);
+    const approveTx = await contract.setApprovalForAll(MARKETPLACE_ADDRESS, true);
+    await approveTx.wait();
+    const tx = await marketplaceContract.buyNFT(STUDENTNFT_ADDRESS, nftDetails.tokenId, {value: priceInWei });
+    const receipt = await tx.wait();
+    setLoading(false);
+    alert('NFT bought successfully!');
+  } catch (error) {
+    console.error('Error buying NFT:', error);
+    setError('Failed to buy NFT.');
+    setLoading(false);
+  }
   };
 
   const handleListNFT = async () => {
@@ -295,95 +306,123 @@ function NFTDetailsPage() {
   }
 
   return (
-  <div className="container nft-details-page">
-    <h2 className="page-title">NFT Details</h2>
-    <div className="nft-details-card">
-      <h3 className="nft-token-id">Token ID: {nftDetails.tokenId}</h3>
-      {nftDetails.metadata && (
-        <div className="nft-metadata">
-          {nftDetails.metadata.image && (
-            <img
-              src={`http://localhost:8080/ipfs/${nftDetails.imageUri}`}
-              alt={nftDetails.metadata.name}
-              className="nft-image"
-            />
-          )}
-          {nftDetails.metadata.name && <p className="nft-name">Name: {nftDetails.metadata.name}</p>}
-          {nftDetails.metadata.description && (
-            <p className="nft-description">Description: {nftDetails.metadata.description}</p>
-          )}
-          {/* Display other metadata properties here */}
-          {Object.keys(nftDetails.metadata).map((key) => {
-            if (key !== 'name' && key !== 'description' && key !== 'image') {
-              return (
-                <p key={key} className={`nft-${key}`}>
-                  {key}: {JSON.stringify(nftDetails.metadata[key])}
-                </p>
-              );
-            }
-            return null;
-          })}
-        </div>
-      )}
-      {!nftDetails.metadata && (
-        <p className="nft-metadata-not-found">Metadata not found for this NFT.</p>
-      )}
+    <div className="container nft-details-page">
+        <h2 className="page-title">NFT Details</h2>
 
-      {/* Display SO Information */}
-      {nftDetails.owner && (
-        <div className="nft-so-info">
-          <h3>Minted By:</h3>
-          <p>Name: {nftDetails.ownerUsername}</p>
-          <p>Wallet Address: {currentWalletAddress}</p>
-        </div>
-      )}
+        {/* Main card container */}
+        <div className="nft-details-card">
 
-      {isListed ? (
-        <div className="nft-purchase-info">
-          <p className="nft-price">Price: {listingPrice ? `${listingPrice} WBT` : 'Loading...'}</p>
-          {userRole === 'student' && (
-            <button className="buy-button" onClick={handleBuyNFT}>
-              Buy
-            </button>
-          )}
-          {userRole !== 'student' && <p className="not-allowed-action">Only students can buy NFTs.</p>}
-        </div>
-      ) : nftDetails.price !== undefined && nftDetails.price !== null ? (
-        <div className="nft-purchase-info">
-          <p className="nft-price">Price: {nftDetails.price} {/* This was likely a placeholder */}</p>
-          {userRole === 'student' && (
-            <button className="buy-button" onClick={handleBuyNFT}>
-              Buy
-            </button>
-          )}
-          {userRole !== 'student' && <p className="not-allowed-action">Only students can buy NFTs.</p>}
-        </div>
-      ) : (
-        <p className="not-for-sale">This NFT is not currently for sale.</p>
-      )}
+            {/* Token ID - Placed above the two columns */}
+            <h3 className="nft-token-id">Token ID: {nftDetails.tokenId}</h3>
 
-      {/* List/Delist Functionality */}
-      {isOwner && userRole === 'student organization' && (
-        <div className="nft-listing-actions">
-          {!isListed ? (
-            <button className="list-button" onClick={handleListNFT}>
-              List NFT
-            </button>
-          ) : (
-            <div>
-              <p>Listed for: {listingPrice ? `${listingPrice} WBT` : 'Loading...'}</p>
-              <button className="delist-button" onClick={handleDelistNFT}>
-                Delist NFT
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-      {isOwner && userRole !== 'student organization' && (
-        <p className="not-allowed-action">Only student organizations can list or delist NFTs.</p>
-      )}
-    </div>
-  </div>
+            {/* Flex container for side-by-side layout */}
+            <div className="nft-content-wrapper">
+
+                {/* Left Column: Image */}
+                {nftDetails.metadata?.image ? (
+                    <div className="nft-image-container">
+                        <img
+                            src={`http://localhost:8080/ipfs/${nftDetails.imageUri}`} 
+                            alt={nftDetails.metadata.name || `NFT Token ${nftDetails.tokenId}`}
+                            className="nft-image"
+                        />
+                    </div>
+                ) : (
+                    <div className="nft-image-placeholder">No Image Available</div> // Placeholder if no image
+                )}
+
+                {/* Right Column: Text Details and Actions */}
+                <div className="nft-text-details">
+                    {/* Metadata Text */}
+                    {nftDetails.metadata ? (
+                        <div className="nft-metadata-text">
+                            {nftDetails.metadata.name && <p className="nft-name"><strong>Name:</strong> {nftDetails.metadata.name}</p>}
+                            {nftDetails.metadata.description && (
+                                <p className="nft-description"><strong>Description:</strong> {nftDetails.metadata.description}</p>
+                            )}
+                            {/* Display other metadata properties */}
+                            {Object.keys(nftDetails.metadata).map((key) => {
+                                if (key !== 'name' && key !== 'description' && key !== 'image') {
+                                    // Simple display for other attributes
+                                    let value = nftDetails.metadata[key];
+                                    try {
+                                        value = (typeof value === 'object' && value !== null) ? JSON.stringify(value) : value;
+                                     } catch (e) { /* Ignore stringify errors */ }
+
+                                    return (
+                                        <p key={key} className={`nft-attribute nft-${key}`}>
+                                            <strong>{`${key.charAt(0).toUpperCase() + key.slice(1)}:`}</strong> {String(value)}
+                                        </p>
+                                    );
+                                }
+                                return null;
+                            })}
+                        </div>
+                    ) : (
+                        <p className="nft-metadata-not-found">Metadata could not be loaded.</p>
+                    )}
+
+                    {/* Owner Info */}
+                    {nftDetails.owner && ( 
+                        <div className="nft-owner-info">
+                            
+                            <p><strong>Owner:</strong> {nftDetails.ownerUsername || 'Loading...'}</p> 
+                            <p><strong>Wallet:</strong> {nftDetails.owner}</p> {/* Display owner's actual wallet */}
+                        </div>
+                    )}
+
+                    {/* Purchase Info / Status */}
+                    <div className="nft-status-action">
+                        {isListed ? (
+                            <div className="nft-purchase-info listed">
+                                 <h4>For Sale</h4>
+                                <p className="nft-price">Price: {listingPrice ? `${listingPrice} WBT` : 'Loading...'}</p>
+                                {userRole === 'student' && currentWalletAddress.toLowerCase() !== nftDetails.owner.toLowerCase() && ( // Ensure user is not owner
+                                    <button className="buy-button" onClick={handleBuyNFT}>
+                                        Buy Now
+                                    </button>
+                                )}
+                                {currentWalletAddress.toLowerCase() === nftDetails.owner.toLowerCase() && (
+                                    <p className="info-text">You own this NFT.</p>
+                                )}
+                                {userRole !== 'student' && (
+                                    <p className="not-allowed-action info-text">Only students can purchase NFTs.</p>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="nft-purchase-info not-listed">
+                                <p className="not-for-sale">This NFT is not currently listed for sale.</p>
+                            </div>
+                        )}
+                    </div>
+
+
+                    {/* Listing Actions (Only for Owner who is an SO) */}
+                    {isOwner && userRole === 'student organization' && (
+                        <div className="nft-listing-actions">
+                             <h4>Manage Listing</h4>
+                            {!isListed ? (
+                                <button className="list-button" onClick={handleListNFT}>
+                                    List NFT for Sale
+                                </button>
+                            ) : (
+                                <div>
+                                    <p className="info-text">Currently listed for: {listingPrice ? `${listingPrice} WBT` : '...'}</p>
+                                    <button className="delist-button" onClick={handleDelistNFT}>
+                                        Delist NFT
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                     {isOwner && userRole !== 'student organization' && (
+                         <p className="not-allowed-action info-text">Note: Only Student Organizations can list owned NFTs.</p>
+                     )}
+
+                </div> {/* End nft-text-details */}
+            </div> {/* End nft-content-wrapper */}
+        </div> {/* End nft-details-card */}
+    </div> // End container
 );
 }
 

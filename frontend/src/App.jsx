@@ -11,8 +11,8 @@ import SignInPage from './pages/SignInPage';
 import ProfilePage from './pages/ProfilePage';
 import NFTDetailsPage from './pages/NFTDetailsPage';
 import ListingsPage from './pages/ListingsPage';
-
-//const projectId = 'b49849bbf71ecec8def59477cf94bc81'; 
+import AuctionsPage from './pages/AuctionsPage';
+import AuctionDetailsPage from './pages/AuctionDetailsPage';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Initially, the user is not logged in
@@ -27,7 +27,6 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setLoggedInUser(null);
-    // You might also want to clear any stored tokens or local storage here
   };
   return (
     <Router>
@@ -38,11 +37,12 @@ function App() {
             <Route path="/mint" element={<MintPage />} />
             <Route path="/all-nfts" element={<AllNftsPage />} />
             <Route path="/listings" element={<ListingsPage />} /> {/* Route for listings */}
+            <Route path="/auctions" element={<AuctionsPage />} /> {/* Route for auctions */}
+            <Route path="/auction/:auctionAddress" element={<AuctionDetailsPage />} /> {/* Route for auction details */}
             <Route path="/nfts/:tokenId" element={<NFTDetailsPage />} /> {/* Route for individual NFT details */}
             <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSuccess}/>} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/profile" element={<ProfilePage user={loggedInUser} onLogout={handleLogout} />} />
-            {/* Add other routes for your pages here */}
           </Routes>
         </div>
     </Router>

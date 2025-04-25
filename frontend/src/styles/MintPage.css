@@ -19,7 +19,7 @@
     background-color: white;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    padding: 1.5rem;
+    padding: 2rem;
 }
 
 .form-group {
@@ -69,13 +69,12 @@
     color: #2d3748;
 }
 
-/* New styles for the Mint Page */
 
 /* Style for the file input */
 input[type="file"].form-input {
-    padding: 0.5rem; /* Adjust padding for better appearance */
-    border: 1px dashed #d1d5db; /* Optional: dashed border to indicate file selection */
-    background-color: #f7f7f7; /* Optional: light background */
+    padding: 0.75rem; 
+    border: 1px dashed #d1d5db; /* dashed border to indicate file selection */
+    background-color: #f7f7f7;
 }
 
 input[type="file"].form-input:focus {
@@ -85,6 +84,6 @@ input[type="file"].form-input:focus {
 
 /* Style for the textarea (description) - can reuse form-input styles */
 textarea.form-input {
-    min-height: 100px; /* Adjust minimum height as needed */
-    resize: vertical; /* Allows vertical resizing */
+    min-height: 100px; 
+    resize: vertical; 
 }
