@@ -70,14 +70,12 @@ function NFTDetailsPage() {
           const owner = await contract.ownerOf(tokenId);
           setIsOwner(owner.toLowerCase() === currentWalletAddress?.toLowerCase());
           let ownerUsername = owner; // Default to wallet address if username not found
-          // Fetch SO name using the owner's wallet address
           try {
             const usernameResponse = await fetch(`http://localhost:5000/api/auth/users/username/${owner}`); 
             if (usernameResponse.ok) {
               const usernameData = await usernameResponse.json();
               ownerUsername = usernameData.username;
             } else if (usernameResponse.status === 404) {
-              // Handle not found
             } else {
               console.error('Error fetching SO name:', usernameResponse.status);
             }
@@ -269,6 +267,60 @@ function NFTDetailsPage() {
     }
   };
 
+
+  const handleUpdatePrice = async () => {
+    setError(null); 
+    if (!marketplaceContract || !nftDetails?.tokenId) {
+        setError('Marketplace contract not initialized or NFT details missing.');
+        return;
+    }
+    if (!isOwner) {
+        setError('You are not the owner of this NFT.');
+        return;
+    }
+    if (!isListed) {
+        setError('This NFT is not currently listed for sale.');
+        return;
+    }
+    if (userRole !== 'student organization') {
+        setError('Only student organizations can update the price of NFTs.');
+        return;
+    }
+
+    const newPrice = prompt('Enter the new listing price in WBT:', listingPrice || ''); 
+     if (newPrice === null) return; 
+    if (newPrice.trim() === '' || isNaN(parseFloat(newPrice)) || parseFloat(newPrice) <= 0) {
+        setError('Please enter a valid positive price.');
+        return;
+    }
+    if (newPrice === listingPrice) {
+        setError('The new price is the same as the current price.');
+        return;
+    }
+
+
+    setLoading(true);
+    try {
+        const newPriceInWei = ethers.parseEther(newPrice);
+        const tx = await marketplaceContract.updatePrice(
+             nftDetails.tokenId,
+             newPriceInWei
+        );
+        await tx.wait();
+
+        setListingPrice(newPrice); // Update the displayed price
+        alert('NFT price updated successfully!');
+
+    } catch (error) {
+        console.error('Error updating NFT price:', error);
+        setError(`Failed to update NFT price. ${error.reason || error.message}`);
+        // Price state remains unchanged on error
+    } finally {
+        setLoading(false);
+    }
+  };
+
+
   if (!isWalletConnected) {
     return (
       <div className="container">
@@ -410,6 +462,15 @@ function NFTDetailsPage() {
                                     <p className="info-text">Currently listed for: {listingPrice ? `${listingPrice} WBT` : '...'}</p>
                                     <button className="delist-button" onClick={handleDelistNFT}>
                                         Delist NFT
+                                    </button>
+                                    {/* --- UPDATE PRICE BUTTON --- */}
+                                    <button
+                                        className="update-price-button action-button" // Added class
+                                        onClick={handleUpdatePrice}
+                                        disabled={loading} // Disable during loading state
+                                        style={{ marginLeft: '10px' }} // Added spacing
+                                    >
+                                        Update Price
                                     </button>
                                 </div>
                             )}

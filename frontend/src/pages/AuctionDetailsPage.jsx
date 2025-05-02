@@ -250,7 +250,6 @@ function AuctionDetailsPage() {
      // --- Refresh Button ---
      const handleRefresh = () => {
          setError(null); // Clear error before retrying
-         // Reset potentially stale data before refetching
          setNftMetadata(null);
          setCreatorUsername('');
          fetchCurrentBlockTimestamp(); // Update time first
@@ -260,7 +259,6 @@ function AuctionDetailsPage() {
     const auctionStatusString = auctionDetails.auctionState !== null ? getAuctionStateString(auctionDetails.auctionState) : 'Loading...';
     const isCreator = currentWalletAddress && auctionDetails.originalCreator && currentWalletAddress.toLowerCase() === auctionDetails.originalCreator.toLowerCase();
     const isHighestBidder = currentWalletAddress && auctionDetails.highestBidder && currentWalletAddress.toLowerCase() === auctionDetails.highestBidder.toLowerCase();
-    // Check if the auction contract currently holds the NFT (indicates it was successfully started)
     const isNftInContract = nftOwner && nftOwner.toLowerCase() === auctionAddress?.toLowerCase();
 
 
@@ -355,7 +353,6 @@ function AuctionDetailsPage() {
             if (bidAmountWei <= minBidWei) {
                 throw new Error(`Bid must be higher than the current highest bid (${formatEth(auctionDetails.highestBid)} WBT) or start price (${formatEth(auctionDetails.startPrice)} WBT).`);
             }
-            // Also check against instant buy price if applicable
              if (auctionDetails.instantBuyPrice > 0n && bidAmountWei > auctionDetails.instantBuyPrice) {
                 console.warn("Bid amount exceeds instant buy price. Consider using Instant Buy.");
             }
@@ -450,7 +447,7 @@ function AuctionDetailsPage() {
             const receipt = await tx.wait();
             console.log("Withdraw NFT successful:", receipt);
             alert("NFT withdrawn successfully! Check your wallet.");
-            loadAuctionDetails(); // Refresh data
+            loadAuctionDetails(); 
         } catch (err) {
             console.error("Error withdrawing NFT:", err);
             const reason = err.reason || err.data?.message || err.message || "Unknown error";
@@ -512,7 +509,6 @@ function AuctionDetailsPage() {
              setError("Auction has already been cancelled.");
              return;
          }
-          // Typically, allow cancellation only if it's Open or hasn't started properly
          if (auctionDetails.auctionState !== AuctionState.Open) {
              setError("Auction cannot be cancelled once it has ended or been bought.");
              return;
@@ -528,7 +524,7 @@ function AuctionDetailsPage() {
             const receipt = await tx.wait();
             console.log("Cancel auction successful:", receipt);
             alert("Auction cancelled successfully! NFT returned and bidder refunded (if any).");
-            loadAuctionDetails(); // Refresh data
+            loadAuctionDetails(); 
         } catch (err) {
             console.error("Error cancelling auction:", err);
              const reason = err.reason || err.data?.message || err.message || "Unknown error";
@@ -545,7 +541,6 @@ const handleMarkFactoryEnded = async () => {
          setError("Cannot mark ended: Conditions not met or factory contract not ready.");
          return;
     }
-    // Check if auction actually ended according to its own state
     if (auctionDetails.auctionState !== AuctionState.Ended && auctionDetails.auctionState !== AuctionState.InstantBuy) {
         setError("Cannot mark ended in factory: Auction state is not Ended or InstantBuy.");
         return;
@@ -564,8 +559,8 @@ const handleMarkFactoryEnded = async () => {
         const receipt = await tx.wait();
         console.log("Factory marked ended successfully:", receipt);
         alert("Successfully notified factory that the auction has ended.");
-        // setFactoryNotified(true); // Update local state if using it
-        loadAuctionDetails(); // Refresh local details which might show factory state indirectly if fetched
+        // setFactoryNotified(true);
+        loadAuctionDetails(); 
 
     } catch (err) {
         console.error("Error marking auction ended in factory:", err);
@@ -588,7 +583,6 @@ const handleMarkFactoryCancelled = async () => {
          setError("Cannot mark cancelled: Conditions not met or factory contract not ready.");
         return;
     }
-     // Check if auction actually cancelled according to its own state
     if (auctionDetails.auctionState !== AuctionState.Cancelled) {
         setError("Cannot mark cancelled in factory: Auction state is not Cancelled.");
         return;
@@ -607,8 +601,8 @@ const handleMarkFactoryCancelled = async () => {
         const receipt = await tx.wait();
         console.log("Factory marked cancelled successfully:", receipt);
         alert("Successfully notified factory that the auction was cancelled.");
-        // setFactoryNotified(true); // Update local state if using it
-        loadAuctionDetails(); // Refresh local details
+        // setFactoryNotified(true); 
+        loadAuctionDetails();
 
     } catch (err) {
         console.error("Error marking auction cancelled in factory:", err);
@@ -641,9 +635,7 @@ useEffect(() => {
     if (loading) {
         return <div className="container status-message">Loading Auction Details...</div>;
     }
-
-    // Display error if not loading and no modal error handling needed here specifically
-     if (error && !actionLoading) { // Show general page errors
+     if (error && !actionLoading) { 
         return (
             <div className="container error-message">
                 Error: {error}
@@ -653,7 +645,7 @@ useEffect(() => {
         );
     }
 
-    if (!auctionDetails.nftAddress) { // Check if details were loaded
+    if (!auctionDetails.nftAddress) { 
         return (
             <div className="container status-message">
                 Auction not found or could not be loaded. Was the address correct?
@@ -662,7 +654,6 @@ useEffect(() => {
          );
     }
 
-    // Determine if the start button should be shown
     const showStartButton = isCreator &&
                             auctionDetails.auctionState === AuctionState.Open &&
                             currentBlockTimestamp >= auctionDetails.startTime &&
@@ -670,7 +661,7 @@ useEffect(() => {
 
     return (
         <div className="auction-details-page container">
-             <Link to="/auctions" className="back-link top-link">← Back to Auctions</Link>
+             <Link to="/auctions" className="back-link top-link">Back to Auctions</Link>
             <h1>Auction: {nftMetadata?.name || `Token ID ${auctionDetails.tokenId}`}</h1>
              <button onClick={handleRefresh} disabled={loading || actionLoading} className="refresh-button">
                  Refresh Data
@@ -713,8 +704,6 @@ useEffect(() => {
                      <p><strong>Status:</strong> <span className={`status-${auctionStatusString.toLowerCase().split(' ')[0]}`}>{auctionStatusString}</span></p>
                      {!isNftInContract && auctionDetails.auctionState === AuctionState.Open && currentBlockTimestamp >= auctionDetails.startTime && <p className='info-text small status-warning'>Waiting for creator to start (transfer NFT).</p>}
                      <p><strong>Token ID:</strong> {auctionDetails.tokenId}</p>
-                     <p><strong>NFT Contract:</strong> <a href={`https://sepolia.etherscan.io/address/${auctionDetails.nftAddress}`} target="_blank" rel="noopener noreferrer" title={auctionDetails.nftAddress}>{`${auctionDetails.nftAddress.substring(0, 6)}...${auctionDetails.nftAddress.substring(auctionDetails.nftAddress.length - 4)}`}</a></p>
-                     <p><strong>Auction Contract:</strong> <a href={`https://sepolia.etherscan.io/address/${auctionAddress}`} target="_blank" rel="noopener noreferrer" title={auctionAddress}>{`${auctionAddress.substring(0, 6)}...${auctionAddress.substring(auctionAddress.length - 4)}`}</a></p>
                     <p><strong>Creator:</strong> <span title={auctionDetails.originalCreator}>{creatorUsername || `${auctionDetails.originalCreator.substring(0, 6)}...`}</span></p>
                     <p><strong>Starts:</strong> {formatTime(auctionDetails.startTime)}</p>
                     <p><strong>Ends:</strong> {formatTime(auctionDetails.endTime)}</p>

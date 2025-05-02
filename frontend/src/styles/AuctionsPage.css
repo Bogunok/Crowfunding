@@ -1,9 +1,7 @@
-
-/* Base Page Container  */
 .auctions-page {
     max-width: 1280px; 
-    margin: 0 auto; /* Center */
-    padding: 2rem; /* Match NFT page */
+    margin: 0 auto; 
+    padding: 2rem; 
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
     background-color: #f8f9fa; 
     min-height: 100vh;
@@ -24,15 +22,15 @@
     display: block;
     margin: 0 auto 2.5rem auto;
     padding: 0.7rem 1.5rem;
-    background-color: #4a5568; /* Use a color from the palette */
+    background-color: #4a5568; 
     color: white;
     border: none;
-    border-radius: 0.375rem; /* Slightly less rounded */
+    border-radius: 0.375rem; 
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); 
   }
   
   .start-auction-button:hover:not(:disabled) {
@@ -62,18 +60,17 @@
   /* Grid Layout */
   .auction-grid {
     display: grid;
-    /* Using 3 columns for auctions might be better than 4, adjust as needed */
-    /* grid-template-columns: repeat(4, 1fr); */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Keep responsive */
-    gap: 1.5rem; /* Match NFT page */
+    
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 1.5rem; 
   }
   
   /* Auction Card Styling */
   .auction-card {
-    background-color: white; /* Match NFT page */
-    border-radius: 0.5rem; /* Match NFT page */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Adjusted shadow */
-    overflow: hidden; /* Match NFT page */
+    background-color: white; 
+    border-radius: 0.5rem; 
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); 
+    overflow: hidden; 
     display: flex;
     flex-direction: column;
     max-width: 300px;
@@ -81,19 +78,17 @@
     transition: box-shadow 0.2s ease-in-out;
   }
   .auction-card:hover {
-     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* Slightly stronger hover shadow */
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); 
   }
   
   
   /* Card Image */
   .auction-image {
     width: 100%;
-    height: 200px; /* Keep fixed height or change to auto */
-    /* height: auto; */
+    height: 200px; 
     object-fit: cover;
-    /* border-radius: 0.5rem 0.5rem 0 0; Remove bottom radius if image is flush top */
-    margin-bottom: 0; /* Remove margin if using padding in content div */
-    display: block; /* Remove potential extra space */
+    margin-bottom: 0;
+    display: block; 
     background-color: #f0f2f5;
   }
   
@@ -115,7 +110,7 @@
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* Allow content to grow and push button down */
+    flex-grow: 1; 
   }
   
   /* Card Content Text Styles */
@@ -136,12 +131,10 @@
     line-height: 1.4;
   }
   
-  /* Space before button */
   .auction-card-content .auction-detail:last-of-type {
      margin-bottom: 1rem;
   }
   
-  /* View Auction Button (Link styled as button) */
   .view-button {
     display: block;
     padding: 0.5rem 1rem;
@@ -155,7 +148,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-    margin-top: auto; /* Push button to bottom */
+    margin-top: auto; 
   }
   
   .view-button:hover {
@@ -217,10 +210,8 @@
   }
   
   
-  /* Responsive Adjustments */
   @media (max-width: 1024px) {
     .auction-grid {
-      /* Go to 2 columns on medium screens if using 4 originally, or adjust minmax */
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     }
   }
@@ -239,7 +230,7 @@
   
   @media (max-width: 600px) {
     .auction-grid {
-      grid-template-columns: 1fr; /* Stack cards */
+      grid-template-columns: 1fr; 
     }
      .page-title {
       font-size: 1.5rem;

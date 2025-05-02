@@ -24,8 +24,12 @@ export default function Navbar({ isLoggedIn, userRole }) {
       </div>
 
       <div className="navbar-right">
-      <Link to="/login" className="nav-link">Login</Link>
-      <Link to="/signin" className="nav-link">Sign in</Link>
+      {!isLoggedIn && (
+          <> 
+            <Link to="/login" className="nav-link">Login</Link>
+            <Link to="/signin" className="nav-link">Sign up</Link>
+          </>
+        )}
         <button onClick={connectWallet} className="connect-button">
           {address ? address.slice(0, 6) + '...' : "Connect Wallet"}
         </button>

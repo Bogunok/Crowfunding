@@ -42,11 +42,11 @@ function LoginPage({ onLoginSuccess }) {
 
       if (response.ok) {
         console.log('Login successful:', data);
-        onLoginSuccess(data.user); // Call the function passed from App.js
-        navigate('/'); // Redirect to the homepage or another page after successful login
+        onLoginSuccess(data.user); 
+        navigate('/'); // Redirect to the homepage after successful login
       } else {
         console.error('Login failed:', data);
-        setError(data.error || 'Invalid credentials'); // Display error message from backend or a generic message
+        setError(data.error || 'Invalid credentials'); 
       }
     } catch (error) {
       console.error('Error during login:', error);

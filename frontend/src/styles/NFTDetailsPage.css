@@ -1,286 +1,291 @@
-/* Base Page Styles */
 .nft-details-page {
-  padding: 30px 15px; /* Consistent padding L/R */
-  background-color: #f8f9fa; /* User's style */
-  min-height: 100vh; /* User's style */
+  padding: 30px 15px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .page-title {
-  font-size: 3rem; /* User's style */
-  margin-bottom: 30px; /* User's style */
-  color: #343a40; /* User's style */
-  text-align: center; /* User's style */
-  width: 100%; /* User's style */
+  font-size: 3rem;
+  margin-bottom: 30px;
+  color: #343a40;
+  text-align: center;
+  width: 100%;
 }
 
-/* === MODIFIED NFT Details Card === */
 .nft-details-card {
-  background-color: #fff; /* User's style */
-  border-radius: 12px; /* User's style */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* User's style */
-  padding: 30px; /* User's style */
-  max-width: 1000px; /* ADDED reasonable max-width for side-by-side */
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  padding: 30px;
+  max-width: 1000px;
   flex-basis: calc(20% - 25px);
-  width: 95%;        /* Ensure some space from screen edges */
-  margin: 0 auto 40px auto; /* ADDED auto L/R margins for centering, kept bottom margin */
-  /* ':only-child' selector likely not needed for a details page, removed for clarity */
+  width: 95%;
+  margin: 0 auto 40px auto;
 }
 
-/* === NEW Flex Container for Side-by-Side Layout === */
 .nft-content-wrapper {
   display: flex;
-  gap: 40px; /* Increased space between image and text column */
-  align-items: flex-start; /* Align tops of image and text column */
+  gap: 40px;
+  align-items: flex-start;
 }
 
-/* === MODIFIED Image Container/Styles === */
 .nft-image-container {
-  flex-basis: 40%; /* Image column width (adjust %) */
-  flex-shrink: 0; /* Prevent shrinking */
+  flex-basis: 40%;
+  flex-shrink: 0;
 }
 
 .nft-image {
-  display: block; /* Prevents extra space below image */
-  max-width: 100%; /* User's style - good */
-  height: auto; /* User's style - good */
-  border-radius: 8px; /* User's style */
-  /* REMOVED margin-bottom: 25px; (Handled by gap in wrapper) */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* User's style */
-  background-color: #f0f0f0; /* Added placeholder bg */
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f0f0f0;
 }
 
-/* Placeholder for missing image */
 .nft-image-placeholder {
-    flex-basis: 40%; /* Match image column */
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: 250px; /* Example height */
-    background-color: #f0f0f0;
-    color: #95a5a6;
-    border-radius: 8px;
-    font-style: italic;
+  flex-basis: 40%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 250px;
+  background-color: #f0f0f0;
+  color: #95a5a6;
+  border-radius: 8px;
+  font-style: italic;
 }
 
-/* === NEW Text Details Column === */
 .nft-text-details {
-  flex-basis: 60%; /* Text column takes remaining width (adjust %) */
+  flex-basis: 60%;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Vertical space BETWEEN sections in this column */
+  gap: 25px;
 }
 
-/* === ADJUSTED Text & Section Styles (now inside text column) === */
 .nft-token-id {
-  font-size: 1.1rem; /* User's style */
-  color: #6c757d; /* User's style */
-  /* REMOVED margin-bottom: 15px; (Handled by gap) */
-  order: -1; /* Optional: Move Token ID visually above Name */
+  font-size: 1.1rem;
+  color: #6c757d;
+  order: -1;
   padding-bottom: 10px;
-  border-bottom: 1px dashed #ccc; /* Add a separator */
-  margin-bottom: 0; /* Ensure no extra margin */
+  border-bottom: 1px dashed #ccc;
+  margin-bottom: 0;
 }
 
 .nft-name {
-  font-size: 2.2rem; /* User's style */
-  font-weight: 600; /* User's style */
-  color: #212529; /* User's style */
-  margin-bottom: 10px; /* Keep some margin below name */
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 10px;
   line-height: 1.3;
 }
 
 .nft-description {
-  color: #495057; /* User's style */
-  line-height: 1.7; /* User's style */
-  margin-bottom: 0; /* REMOVED margin-bottom: 30px; (Handled by gap) */
+  color: #495057;
+  line-height: 1.7;
+  margin-bottom: 0;
 }
 
-/* Metadata Section */
 .nft-metadata {
-  /* REMOVED margin-bottom: 30px; (Handled by gap) */
-  border-top: 1px solid #e0e0e0; /* User's style */
-  padding-top: 20px; /* Adjusted padding */
+  border-top: 1px solid #e0e0e0;
+  padding-top: 20px;
   margin-top: 0;
 }
 
 .nft-metadata p {
-  color: #555; /* User's style */
-  margin-bottom: 8px; /* User's style */
-  font-size: 1rem; /* User's style */
-}
-.nft-metadata p strong { /* Style for attribute keys */
-    font-weight: 600;
-    color: #333;
-    margin-right: 5px;
+  color: #555;
+  margin-bottom: 8px;
+  font-size: 1rem;
 }
 
+.nft-metadata p strong {
+  font-weight: 600;
+  color: #333;
+  margin-right: 5px;
+}
 
-/* SO Info Section */
 .nft-so-info {
-  /* REMOVED margin-bottom: 30px; (Handled by gap) */
-  padding: 20px; /* User's style */
-  border: 1px solid #ced4da; /* User's style */
-  border-radius: 8px; /* User's style */
-  background-color: #f0f8ff; /* User's style */
+  padding: 20px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #f0f8ff;
   margin-top: 0;
 }
 
-.nft-so-info h4 { /* Changed h3 to h4 for semantic consistency */
-  font-size: 1.3rem; /* User's style */
-  margin-top: 0; /* User's style */
-  margin-bottom: 15px; /* User's style */
-  color: #343a40; /* User's style */
+.nft-so-info h4 {
+  font-size: 1.3rem;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #343a40;
 }
 
 .nft-so-info p {
-  color: #495057; /* User's style */
-  margin-bottom: 8px; /* User's style */
-}
-.nft-so-info p strong { /* Style for keys */
-    font-weight: 600;
-    color: #333;
-    margin-right: 5px;
+  color: #495057;
+  margin-bottom: 8px;
 }
 
-/* Purchase Info Section */
+.nft-so-info p strong {
+  font-weight: 600;
+  color: #333;
+  margin-right: 5px;
+}
+
 .nft-purchase-info {
-  display: flex; /* User's style */
-  flex-wrap: wrap; /* Allow wrapping */
-  align-items: center; /* User's style */
-  gap: 20px; /* Adjusted gap */
-  /* REMOVED margin-top: 30px; (Handled by gap) */
-  border-top: 1px solid #e0e0e0; /* Add separator */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid #e0e0e0;
   padding-top: 20px;
 }
 
 .nft-price {
-  font-size: 1.8rem; /* User's style */
-  font-weight: 700; /* User's style */
-  color: #28a745; /* User's style */
-  margin-bottom: 0; /* Remove extra margin */
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #28a745;
+  margin-bottom: 0;
 }
 
 .buy-button {
-  background-color: #007bff; /* User's style */
-  color: white; /* User's style */
-  border: none; /* User's style */
-  padding: 12px 25px; /* User's style */
-  border-radius: 8px; /* User's style */
-  cursor: pointer; /* User's style */
-  font-size: 1.1rem; /* User's style */
-  transition: background-color 0.3s ease; /* User's style */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
 }
 
 .buy-button:hover {
-  background-color: #0056b3; /* User's style */
+  background-color: #0056b3;
 }
 
 .not-for-sale {
-  color: #dc3545; /* User's style */
-  font-weight: bold; /* User's style */
-  /* REMOVED margin-top: 15px; */
-  font-size: 1.1rem; /* User's style */
-  width: 100%; /* Ensure it takes space correctly */
+  color: #dc3545;
+  font-weight: bold;
+  font-size: 1.1rem;
+  width: 100%;
 }
 
-/* Listing Actions Section */
 .nft-listing-actions {
- /* REMOVED margin-top: 30px; (Handled by gap) */
-  padding-top: 20px; /* User's style */
-  border-top: 1px solid #e0e0e0; /* User's style */
-  display: flex; /* User's style */
-  flex-direction: column; /* User's style */
-  gap: 15px; /* User's style */
-  align-items: flex-start; /* User's style */
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
 }
-.nft-listing-actions h4 { /* Added title */
-    font-size: 1.3rem;
-    margin-top: 0;
-    margin-bottom: 5px; /* Small margin above actions */
-    color: #343a40;
+
+.nft-listing-actions h4 {
+  font-size: 1.3rem;
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: #343a40;
 }
 
 .list-button,
 .delist-button {
-  background-color: #6c757d; /* User's style */
-  color: white; /* User's style */
-  border: none; /* User's style */
-  padding: 10px 20px; /* User's style */
-  border-radius: 5px; /* User's style */
-  cursor: pointer; /* User's style */
-  font-size: 1rem; /* User's style */
-  transition: background-color 0.3s ease; /* User's style */
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .list-button:hover,
 .delist-button:hover {
-  background-color: #545b62; /* User's style */
+  background-color: #545b62;
 }
 
-/* Row containing listed price + delist button */
+.update-price-button {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.update-price-button:hover:not(:disabled) {
+  background-color: #e0a800;
+  color: #212529;
+}
+
 .nft-listing-actions > div {
-  display: flex; /* User's style */
-  gap: 15px; /* User's style */
-  align-items: center; /* User's style */
+  display: flex;
+  gap: 15px;
+  align-items: center;
   flex-wrap: wrap;
 }
 
 .nft-listing-actions > div > p {
-  margin-bottom: 0; /* User's style */
-  font-weight: bold; /* User's style */
-  color: #007bff; /* User's style */
+  margin-bottom: 0;
+  font-weight: bold;
+  color: #007bff;
 }
 
-/* Status/Error Messages */
 .error-message,
 .loading-message,
 .not-allowed-action,
-.info-text { /* Added generic info class */
-  /* REMOVED margin-top: 15px; */
-  font-weight: bold; /* User's style */
-  padding: 5px 0; /* Add small padding */
+.info-text {
+  font-weight: bold;
+  padding: 5px 0;
 }
 
-.error-message { color: #dc3545; } /* User's style */
-.loading-message { color: #007bff; } /* User's style */
-.not-allowed-action { color: #ffc107; font-size: 0.9rem; } /* User's style, adjusted size */
-.info-text { color: #6c757d; font-weight: normal; font-style: italic; font-size: 0.9rem;}
+.error-message {
+  color: #dc3545;
+}
 
+.loading-message {
+  color: #007bff;
+}
 
-/* === ADDED Responsive Adjustments === */
+.not-allowed-action {
+  color: #ffc107;
+  font-size: 0.9rem;
+}
+
+.info-text {
+  color: #6c757d;
+  font-weight: normal;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .nft-content-wrapper {
-    flex-direction: column; /* Stack image and text vertically */
+    flex-direction: column;
     gap: 30px;
   }
 
   .nft-image-container,
   .nft-text-details {
-    flex-basis: 100%; /* Make columns take full width */
+    flex-basis: 100%;
     width: 100%;
   }
 
-   .nft-image-container {
-      max-width: 450px; /* Optional: Limit image width */
-      margin: 0 auto; /* Center image */
-   }
+  .nft-image-container {
+    max-width: 450px;
+    margin: 0 auto;
+  }
 
   .nft-details-card {
-    padding: 20px; /* Reduce padding */
+    padding: 20px;
   }
 
   .page-title {
-      font-size: 2.2rem; /* Adjust title size */
+    font-size: 2.2rem;
   }
-   .nft-name {
-      font-size: 1.8rem; /* Adjust name size */
-   }
-   .nft-price {
-       font-size: 1.6rem; /* Adjust price size */
-   }
+
+  .nft-name {
+    font-size: 1.8rem;
+  }
+
+  .nft-price {
+    font-size: 1.6rem;
+  }
 }

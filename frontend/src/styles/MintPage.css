@@ -70,10 +70,9 @@
 }
 
 
-/* Style for the file input */
 input[type="file"].form-input {
     padding: 0.75rem; 
-    border: 1px dashed #d1d5db; /* dashed border to indicate file selection */
+    border: 1px dashed #d1d5db; 
     background-color: #f7f7f7;
 }
 
@@ -82,7 +81,6 @@ input[type="file"].form-input:focus {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
-/* Style for the textarea (description) - can reuse form-input styles */
 textarea.form-input {
     min-height: 100px; 
     resize: vertical; 

@@ -440,12 +440,12 @@ function AuctionsPage() {
                              return null; // Not owned by the current user
                         }
                     } catch (ownerError) {
-                        return null; // Return null if error occurred (e.g., token doesn't exist)
+                        return null;
                     }
                 })()); 
             }
     
-            // 4. Wait for all checks to complete and filter results
+          
             const results = await Promise.all(ownedNftCheckPromises);
             const successfullyOwnedNfts = results.filter(nft => nft !== null);
             setOwnedNFTs(successfullyOwnedNfts);
@@ -471,7 +471,6 @@ function AuctionsPage() {
     // --- Handle Auction Creation (Using Start/End Timestamps) ---
     const handleCreateAuction = async ({ tokenId, startPrice, startTime, endTime, instantBuyPrice }) => {
         if (!signer || !currentWalletAddress) {
-            // This error should ideally be shown within the modal
             setError('Wallet not connected or signer not available.');
             return;
         }
@@ -482,17 +481,17 @@ function AuctionsPage() {
             const factoryContract = new ethers.Contract(AUCTIONFACTORY_ADDRESS, AuctionFactoryABI, signer);
             const nftContract = new ethers.Contract(STUDENTNFT_ADDRESS, StudentNFTABI, signer);
 
-            // 1. Approve the Factory to transfer this specific NFT
+            // Approve the Factory to transfer this specific NFT
             console.log(`Approving Factory (${AUCTIONFACTORY_ADDRESS}) for NFT Token ID: ${tokenId}...`);
             const approvalTx = await nftContract.approve(AUCTIONFACTORY_ADDRESS, tokenId);
             const approvalReceipt = await approvalTx.wait();
             console.log('Approval successful:', approvalReceipt.hash);
 
-            // 2. Parse prices to Wei
+            
             const startPriceWei = ethers.parseEther(startPrice);
-            const instantBuyPriceWei = ethers.parseEther(instantBuyPrice); // Handles '0' correctly
+            const instantBuyPriceWei = ethers.parseEther(instantBuyPrice); 
 
-            // 3. Call MODIFIED createAuction on the Factory
+           
             console.log(`Creating auction for Token ID: ${tokenId} starting at ${new Date(startTime * 1000)} ending at ${new Date(endTime * 1000)}...`);
             console.log(`Params: NFT=${STUDENTNFT_ADDRESS}, TokenId=${tokenId}, StartTime=${startTime}, EndTime=${endTime}, InstantBuyWei=${instantBuyPriceWei.toString()}, StartPriceWei=${startPriceWei.toString()}`);
 
@@ -543,7 +542,7 @@ function AuctionsPage() {
         return <div className="container status-message">Loading auctions...</div>;
     }
 
-     // Display general error (not modal specific, unless modal sets it)
+     // Display general error 
      if (error && (!showCreateModal || !modalLoading)) {
          return <div className="container error-message">Error: {error} <button onClick={loadAuctions}>Retry</button></div>;
      }
@@ -607,7 +606,6 @@ function AuctionsPage() {
                                 <p className="auction-detail">Creator: {auction.originalCreator}</p>
                                 <p className="auction-detail">Starts: {formatTime(auction.startTime)}</p>
                                 <p className="auction-detail">Ends: {formatTime(auction.endTime)}</p>
-                                {/* Add more details like start price, highest bid if fetched from Auction contract */}
                                 <Link to={`/auction/${auction.auctionAddress}`} className="view-button">
                                     View Auction
                                 </Link>
@@ -641,7 +639,6 @@ function AuctionsPage() {
                                 <p className="auction-detail">Creator: {auction.originalCreator}</p>
                                 <p className="auction-detail">Started: {formatTime(auction.startTime)}</p>
                                 <p className="auction-detail">Ended: {formatTime(auction.endTime)}</p>
-                                {/* Optionally show final price/winner if fetched */}
                                 <Link to={`/auction/${auction.auctionAddress}`} className="view-button">
                                     View Details
                                 </Link>
