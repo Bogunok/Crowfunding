@@ -6,9 +6,8 @@ import StudentNFTABI from '../contracts/StudentNFT.json';
 import AuctionFactoryABI from '../contracts/AuctionFactory.json';
 import AuctionABI from '../contracts/Auction.json'; 
 import '../styles/AuctionDetailsPage.css'; 
+import { STUDENTNFT_ADDRESS, AUCTIONFACTORY_ADDRESS} from '../constants';
 
-const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
-const AUCTIONFACTORY_ADDRESS = '0xC62913442474811a22A24A173f9Ac48e56c605A4';
 
 const AuctionState = {
     Open: 0,

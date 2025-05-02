@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useWallet } from '../context/Web3Context.jsx';
 import '../styles/Navbar.css';
+import crowIcon from '../assets/images/crow-icon.png'; 
 
 export default function Navbar({ isLoggedIn, userRole }) {
   const { address, connectWallet } = useWallet();
@@ -10,7 +11,10 @@ export default function Navbar({ isLoggedIn, userRole }) {
     <nav className="navbar">
       <div className="navbar-left">
         <Link to="/" className="logo-link">
-          <div className="logo">Crowfunding</div>
+        <div className="logo">
+            <img src={crowIcon} alt="Crow logo" className="logo-icon" />
+            Crowfunding
+          </div>
         </Link>
       </div>
       

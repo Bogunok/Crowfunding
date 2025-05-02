@@ -5,9 +5,8 @@ import StudentNFTABI from '../contracts/StudentNFT.json';
 import MarketplaceABI from '../contracts/Marketplace.json'; 
 import { Web3Context } from '../context/Web3Context';
 import '../styles/NFTDetailsPage.css';
-
-const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
-const MARKETPLACE_ADDRESS = '0xAF3124b52D2Fa1B4399bcbe2803C0aBF259EE8a6'; 
+import { STUDENTNFT_ADDRESS, MARKETPLACE_ADDRESS} from '../constants';
+ 
 
 function NFTDetailsPage() {
   const { tokenId } = useParams();
@@ -427,16 +426,13 @@ function NFTDetailsPage() {
                     <div className="nft-status-action">
                         {isListed ? (
                             <div className="nft-purchase-info listed">
-                                 <h4>For Sale</h4>
-                                <p className="nft-price">Price: {listingPrice ? `${listingPrice} WBT` : 'Loading...'}</p>
+                                 
                                 {userRole === 'student' && currentWalletAddress.toLowerCase() !== nftDetails.owner.toLowerCase() && ( // Ensure user is not owner
                                     <button className="buy-button" onClick={handleBuyNFT}>
                                         Buy Now
                                     </button>
                                 )}
-                                {currentWalletAddress.toLowerCase() === nftDetails.owner.toLowerCase() && (
-                                    <p className="info-text">You own this NFT.</p>
-                                )}
+                                
                                 {userRole !== 'student' && (
                                     <p className="not-allowed-action info-text">Only students can purchase NFTs.</p>
                                 )}
@@ -452,23 +448,22 @@ function NFTDetailsPage() {
                     {/* Listing Actions (Only for Owner who is an SO) */}
                     {isOwner && userRole === 'student organization' && (
                         <div className="nft-listing-actions">
-                             <h4>Manage Listing</h4>
                             {!isListed ? (
                                 <button className="list-button" onClick={handleListNFT}>
-                                    List NFT for Sale
+                                    List for Sale
                                 </button>
                             ) : (
                                 <div>
-                                    <p className="info-text">Currently listed for: {listingPrice ? `${listingPrice} WBT` : '...'}</p>
+                                    <p className="info-text">Listed for: {listingPrice ? `${listingPrice} WBT` : '...'}</p>
                                     <button className="delist-button" onClick={handleDelistNFT}>
-                                        Delist NFT
+                                        Delist
                                     </button>
-                                    {/* --- UPDATE PRICE BUTTON --- */}
+                                    
                                     <button
-                                        className="update-price-button action-button" // Added class
+                                        className="update-price-button action-button" 
                                         onClick={handleUpdatePrice}
-                                        disabled={loading} // Disable during loading state
-                                        style={{ marginLeft: '10px' }} // Added spacing
+                                        disabled={loading} 
+                                        style={{ marginLeft: '10px' }} 
                                     >
                                         Update Price
                                     </button>

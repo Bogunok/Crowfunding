@@ -8,9 +8,8 @@ import { Web3Context } from '../context/Web3Context';
 import '../styles/AuctionsPage.css'; 
 import '../styles/AuctionModal.css'; 
 import { Link } from 'react-router-dom';
+import { STUDENTNFT_ADDRESS, AUCTIONFACTORY_ADDRESS} from '../constants';
 
-const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
-const AUCTIONFACTORY_ADDRESS = '0xC62913442474811a22A24A173f9Ac48e56c605A4';
 
 function CreateAuctionModal({ show, onClose, ownedNFTs, onCreateAuction, loading }) {
     const [selectedTokenId, setSelectedTokenId] = useState('');

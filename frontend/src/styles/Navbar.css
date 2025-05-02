@@ -26,9 +26,15 @@
 }
 
 .logo {
-  height: 100px;
+  height: 100%;
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.logo-icon {
+  height: 35px;
+  width: auto;  
+  margin-right: 8px; 
 }
 
 .navbar-center {

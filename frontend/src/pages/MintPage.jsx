@@ -3,8 +3,8 @@ import { ethers } from 'ethers';
 import StudentNFTABI from '../contracts/StudentNFT.json';
 import { Web3Context } from '../context/Web3Context';
 import '../styles/MintPage.css';
+import { STUDENTNFT_ADDRESS} from '../constants';
 
-const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
 
 function MintPage() {
   const [imageFile, setImageFile] = useState(null);
@@ -13,6 +13,37 @@ function MintPage() {
   const [mintingStatus, setMintingStatus] = useState('');
   const [contract, setContract] = useState(null);
   const { signer, isWalletConnected, address } = useContext(Web3Context);
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    async function fetchUserRole() {
+      if (address) {
+        setUserRole(null); 
+        try {
+          
+          const response = await fetch(`http://localhost:5000/api/auth/users/${address}`);
+          if (response.ok) {
+            const userData = await response.json();
+            setUserRole(userData.role); 
+            console.log("User role fetched:", userData.role);
+          } else {
+            console.error('Failed to fetch user role:', response.status);
+            setUserRole(null); 
+          }
+        } catch (error) {
+          console.error('Error fetching user role:', error);
+          setUserRole(null); 
+        }
+ 
+      } else {
+        setUserRole(null); 
+
+      }
+    }
+
+    fetchUserRole();
+  }, [address]);
+
 
   useEffect(() => {
     async function initializeContract() {
@@ -48,27 +79,22 @@ function MintPage() {
       setMintingStatus('Please select an image and provide a name and description.');
       return null;
     }
-
     setMintingStatus('Uploading to IPFS...');
-
     try {
       const formData = new FormData();
       formData.append('image', imageFile);
       formData.append('name', name);
       formData.append('description', description);
-
-      const response = await fetch('http://localhost:5000/api/upload-nft', { 
+      const response = await fetch('http://localhost:5000/api/upload-nft', {
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         const errorData = await response.text();
         console.error('Error uploading to backend:', errorData);
         setMintingStatus(`IPFS upload failed: ${errorData}`);
         return null;
       }
-
       const data = await response.json();
       setMintingStatus('Metadata uploaded to IPFS successfully!');
       return data.metadataUri;
@@ -84,33 +110,58 @@ function MintPage() {
       setMintingStatus('Connect your wallet first.');
       return;
     }
-
     if (!address) {
       setMintingStatus('Wallet address not found. Please ensure your wallet is connected.');
       return;
     }
 
-    setMintingStatus('Preparing to mint...');
+    if (userRole !== 'student organization') {
+      setMintingStatus(`Minting restricted`);
+      console.warn(`Mint attempt blocked for user ${address} with role ${userRole}`);
+      return;
+    }
 
+    setMintingStatus('Preparing to mint...');
     const metadataURI = await uploadToIPFS();
 
     if (metadataURI) {
-      setMintingStatus('Minting in progress...');
+      setMintingStatus('Minting in progress... Please confirm the transaction in your wallet.');
       try {
-        console.log('Minting NFT with metadata URI:', metadataURI);
+        console.log(`Minting NFT for ${address} with metadata URI: ${metadataURI}`);
         const tx = await contract.mintNFT(metadataURI);
         console.log('Transaction hash:', tx.hash);
+        setMintingStatus('Waiting for transaction confirmation...');
         await tx.wait();
         setMintingStatus('NFT minted successfully!');
         setImageFile(null);
+        const fileInput = document.getElementById('image');
+        if (fileInput) fileInput.value = null;
         setName('');
         setDescription('');
       } catch (error) {
         console.error('Error minting NFT:', error);
-        setMintingStatus(`Minting failed: ${error.message}`);
+        if (error.code === 'ACTION_REJECTED') {
+             setMintingStatus('Transaction rejected in wallet.');
+        } else if (error.reason) {
+             setMintingStatus(`Minting failed: ${error.reason}`);
+        } else {
+            setMintingStatus(`Minting failed: ${error.message}`);
+        }
       }
     }
   }
+
+  
+  const isMintingDisabled =
+        !contract ||
+        !address ||
+        userRole !== 'student organization' || 
+        mintingStatus.includes('...') ||
+        mintingStatus.includes('Waiting') ||
+        mintingStatus.includes('Uploading') ||
+        mintingStatus.includes('Preparing');
+
+  const areInputsDisabled = !isWalletConnected || userRole !== 'student organization';
 
   return (
     <div className="container">
@@ -119,6 +170,13 @@ function MintPage() {
         <p className="connect-wallet-message">Please connect your wallet to mint NFTs.</p>
       ) : (
         <div className="mint-form">
+          {isWalletConnected && userRole !== 'student organization' && userRole !== null && (
+            <p className="error-message">
+              Only student organizations can mint NFT.
+            </p>
+          )}
+
+
           <div className="form-group">
             <label htmlFor="image" className="form-label">Upload Image:</label>
             <input
@@ -126,6 +184,8 @@ function MintPage() {
               id="image"
               onChange={handleImageChange}
               className="form-input"
+              accept="image/*"
+              disabled={areInputsDisabled}
             />
           </div>
           <div className="form-group">
@@ -133,24 +193,34 @@ function MintPage() {
             <input
               type="text"
               id="name"
-              value={name}
+              value={name || ''}
               onChange={(e) => setName(e.target.value)}
               className="form-input"
+              disabled={areInputsDisabled}
             />
           </div>
           <div className="form-group">
             <label htmlFor="description" className="form-label">Description:</label>
             <textarea
               id="description"
-              value={description}
+              value={description || ''}
               onChange={(e) => setDescription(e.target.value)}
               className="form-input"
+              disabled={areInputsDisabled}
             />
           </div>
-          <button onClick={handleMintNFT} className="mint-button">
-            Mint NFT
+          <button
+            onClick={handleMintNFT}
+            className="mint-button"
+            disabled={isMintingDisabled}
+          >
+            { mintingStatus.includes('...') ||
+              mintingStatus.includes('Waiting') ||
+              mintingStatus.includes('Uploading') ||
+              mintingStatus.includes('Preparing')
+               ? 'Processing...' : 'Mint NFT'}
           </button>
-          {mintingStatus && <p className="mint-status">{mintingStatus}</p>}
+          {mintingStatus && <p className={`mint-status ${mintingStatus.includes('failed') || mintingStatus.includes('Error') || mintingStatus.includes('restricted') ? 'error-message' : 'info-message'}`}>{mintingStatus}</p>}
         </div>
       )}
     </div>

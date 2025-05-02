@@ -9,6 +9,7 @@ function Homepage() {
     <div className="main-container">
       <div className="content">
         <h1 className="main-title">Welcome to the Student NFT Marketplace</h1>
+        <p className="main-description">Create here, fundraise here</p>
         {address && (
           <p className="wallet-info">Connected: {address}</p>
         )}

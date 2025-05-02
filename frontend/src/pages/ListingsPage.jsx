@@ -5,9 +5,8 @@ import MarketplaceABI from '../contracts/Marketplace.json';
 import { Web3Context } from '../context/Web3Context';
 import '../styles/ListingsPage.css'; 
 import { Link } from 'react-router-dom';
+import { STUDENTNFT_ADDRESS, MARKETPLACE_ADDRESS} from '../constants';
 
-const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a'; 
-const MARKETPLACE_ADDRESS = '0xAF3124b52D2Fa1B4399bcbe2803C0aBF259EE8a6'; 
 
 function ListingsPage() {
   const { signer, isWalletConnected, address: currentWalletAddress } = useContext(Web3Context);

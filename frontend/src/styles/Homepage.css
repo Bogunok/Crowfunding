@@ -15,7 +15,13 @@
 }
 
 .main-title {
-    font-size: 1.875rem; 
+    font-size: 2rem; 
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.main-description {
+    font-size: 1.5rem; 
     font-weight: bold;
     margin-bottom: 1.5rem;
 }

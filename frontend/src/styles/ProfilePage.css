@@ -1,7 +1,11 @@
 .profile-page-container {
   position: relative;
   width: 100%;
-  box-sizing: border-box;
+  margin: 0 auto; 
+    padding: 2rem; 
+    background-color: #f8f9fa; 
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 .logout-button.top-right {

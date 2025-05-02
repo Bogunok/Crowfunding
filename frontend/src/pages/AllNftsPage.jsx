@@ -4,8 +4,9 @@ import StudentNFTABI from '../contracts/StudentNFT.json';
 import { Web3Context } from '../context/Web3Context';
 import '../styles/AllNftsPage.css';
 import { Link } from 'react-router-dom'; 
+import { STUDENTNFT_ADDRESS} from '../constants';
 
-const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
+//const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
 
 function ViewNFTsPage() {
   const [mintedNFTs, setMintedNFTs] = useState([]);
@@ -93,6 +94,14 @@ function ViewNFTsPage() {
     return <div className="container"><p className="error-message">Error: {error}</p></div>;
   }
 
+  const maskDescription = (text, maxLength) => {
+    if (!text) return ''; 
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.slice(0, maxLength) + '...';
+  };
+
   return (
     <div className="container">
       <h1 className="page-title">Minted Student NFTs</h1>
@@ -109,7 +118,11 @@ function ViewNFTsPage() {
                     <div className="nft-metadata">
                       {nft.metadata.image && <img src={`http://localhost:8080/ipfs/${nft.imageUri}`} alt={nft.metadata.name} className="nft-image" />}
                       {nft.metadata.name && <p className="nft-name">Name: {nft.metadata.name}</p>}
-                      {nft.metadata.description && <p className="nft-description">{nft.metadata.description}</p>}
+                      {nft.metadata.description && (
+                        <p className="nft-description" title={nft.metadata.description}> 
+                          {maskDescription(nft.metadata.description, 20)} 
+                        </p>
+                      )}
                     </div>
                   )}
                   {!nft.metadata && <p className="nft-metadata-not-found">Metadata not found for this NFT.</p>}

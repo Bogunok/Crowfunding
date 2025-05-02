@@ -4,8 +4,8 @@ import StudentNFTABI from '../contracts/StudentNFT.json';
 import { Web3Context } from '../context/Web3Context';
 import '../styles/ProfilePage.css';
 import { Link, useNavigate } from 'react-router-dom'; 
+import { STUDENTNFT_ADDRESS} from '../constants';
 
-const STUDENTNFT_ADDRESS = '0x1b8758C7abE4fe288a3Eee9f117eCFa6Aaee3E9a';
 
 function ProfilePage({ user, onLogout }) {
   const [mintedNFTs, setMintedNFTs] = useState([]);
@@ -121,6 +121,14 @@ function ProfilePage({ user, onLogout }) {
     navigate('/'); // Redirect to homepage after logout
   };
 
+  const maskDescription = (text, maxLength) => {
+    if (!text) return ''; 
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.slice(0, maxLength) + '...';
+  };
+
   return (
     <div className="profile-page-container"> {/* Main container */}
       <button onClick={handleLogoutClick} className="logout-button top-right">Logout</button>
@@ -146,7 +154,11 @@ function ProfilePage({ user, onLogout }) {
                         <div className="nft-metadata">
                           {nft.metadata.image && <img src={`http://localhost:8080/ipfs/${nft.imageUri}`} alt={nft.metadata.name} className="nft-image" />}
                           {nft.metadata.name && <p className="nft-name">Name: {nft.metadata.name}</p>}
-                          {nft.metadata.description && <p className="nft-description">{nft.metadata.description}</p>}
+                          {nft.metadata.description && (
+                        <p className="nft-description" title={nft.metadata.description}> 
+                          {maskDescription(nft.metadata.description, 20)} 
+                        </p>
+                      )}
                         </div>
                       )}
                       {!nft.metadata && <p className="nft-metadata-not-found">Metadata not found for this NFT.</p>}

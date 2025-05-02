@@ -1,8 +1,6 @@
 .auctions-page {
-    max-width: 1280px; 
     margin: 0 auto; 
     padding: 2rem; 
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
     background-color: #f8f9fa; 
     min-height: 100vh;
     box-sizing: border-box;
