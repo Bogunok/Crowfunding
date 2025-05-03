@@ -3,9 +3,10 @@ import { ethers } from 'ethers';
 import { useParams } from 'react-router-dom';
 import StudentNFTABI from '../contracts/StudentNFT.json';
 import MarketplaceABI from '../contracts/Marketplace.json'; 
+import AuctionFactoryABI from '../contracts/AuctionFactory.json';
 import { Web3Context } from '../context/Web3Context';
 import '../styles/NFTDetailsPage.css';
-import { STUDENTNFT_ADDRESS, MARKETPLACE_ADDRESS} from '../constants';
+import { STUDENTNFT_ADDRESS, MARKETPLACE_ADDRESS, AUCTIONFACTORY_ADDRESS} from '../constants';
  
 
 function NFTDetailsPage() {
@@ -20,6 +21,10 @@ function NFTDetailsPage() {
   const [isListed, setIsListed] = useState(false);
   const [listingPrice, setListingPrice] = useState(null);
   const [marketplaceContract, setMarketplaceContract] = useState(null);
+  // --- Auction specific state ---
+  const [auctionFactoryContract, setAuctionFactoryContract] = useState(null);
+  const [isInAuction, setIsInAuction] = useState(false);
+  const [checkingAuctionStatus, setCheckingAuctionStatus] = useState(false);
 
   useEffect(() => {
     async function initializeContracts() {
@@ -38,6 +43,14 @@ function NFTDetailsPage() {
             signer
           );
           setMarketplaceContract(marketplace);
+
+          const auctionFactory = new ethers.Contract(
+            AUCTIONFACTORY_ADDRESS,
+            AuctionFactoryABI,
+            signer
+        );
+        setAuctionFactoryContract(auctionFactory);
+
         } catch (err) {
           console.error('Error initializing contracts:', err);
           setError('Error initializing contracts.');
@@ -46,6 +59,7 @@ function NFTDetailsPage() {
       } else {
         setContract(null);
         setMarketplaceContract(null);
+        setAuctionFactoryContract(null);
       }
     }
 
@@ -147,6 +161,70 @@ function NFTDetailsPage() {
   }, [marketplaceContract, tokenId]);
 
 
+  // --- Effect to check Auction Status ---
+  useEffect(() => {
+    async function checkAuctionStatus() {
+        // Requires auction factory contract and a valid tokenId
+        if (auctionFactoryContract && tokenId) {
+            setCheckingAuctionStatus(true); // Start loading specifically for auction check
+            setIsInAuction(false); // Reset status before check
+            try {
+                // 1. Get all active auction addresses
+                const activeAuctionAddresses = await auctionFactoryContract.getActiveAuctions();
+
+                if (activeAuctionAddresses.length === 0) {
+                    console.log("No active auctions found.");
+                    setIsInAuction(false); // No auctions, so not in one
+                    return; // Exit early
+                }
+
+                // 2. For each active auction, get its info (especially the tokenId)
+                //    Using Promise.allSettled to handle cases where getAuctionInfo might fail for one auction
+                const auctionInfoPromises = activeAuctionAddresses.map(addr =>
+                    auctionFactoryContract.getAuctionInfo(addr)
+                        .then(info => ({ status: 'fulfilled', value: info, address: addr })) // Wrap result
+                        .catch(error => ({ status: 'rejected', reason: error, address: addr })) // Wrap error
+                );
+
+                const results = await Promise.allSettled(auctionInfoPromises);
+
+                // 3. Check if any active auction matches the current tokenId
+                let foundInAuction = false;
+                for (const result of results) {
+                    if (result.status === 'fulfilled') {
+                        const auctionInfo = result.value.value; // Access the actual info object
+                        const auctionTokenId = Number(auctionInfo.tokenId); // Convert BigInt/string to Number
+                         // Compare with the current page's tokenId (ensure types match)
+                        if (auctionTokenId === Number(tokenId)) {
+                            console.log(`Token ${tokenId} found in active auction: ${result.value.address}`);
+                            foundInAuction = true;
+                            break; // Found a match, no need to check further
+                        }
+                    } else {
+                        // Log errors for auctions we couldn't get info for, but continue checking others
+                        console.warn(`Could not get auction info for ${result.reason.address}:`, result.reason.reason);
+                    }
+                }
+
+                setIsInAuction(foundInAuction); // Update state based on whether a match was found
+
+            } catch (err) {
+                console.error(`Error checking auction status for token ${tokenId}:`, err);
+                // setError("Could not verify auction status."); // Optional: set error
+                setIsInAuction(false); // Assume not in auction on error
+            } finally {
+                setCheckingAuctionStatus(false); // Stop loading for auction check
+            }
+        } else {
+            setIsInAuction(false); // Reset if contract not ready
+        }
+    }
+
+    checkAuctionStatus();
+    // Dependency: Re-check if auction factory contract or tokenId changes
+}, [auctionFactoryContract, tokenId]);
+
+
   const handleBuyNFT = async () => {
     if (!currentWalletAddress || userRole !== 'student') {
       setError('Only logged-in students can buy NFTs.');
@@ -180,52 +258,82 @@ function NFTDetailsPage() {
   }
   };
 
-  const handleListNFT = async () => {
-    if (!marketplaceContract || !contract || !nftDetails?.tokenId) {
-      setError('Marketplace or NFT contract not initialized.');
-      return;
-    }
 
+
+  const handleListNFT = async () => {
+   
+    if (!marketplaceContract || !contract || !nftDetails?.tokenId) { 
+        alert('Cannot list: Contracts not ready or NFT details missing. Please wait or refresh.');
+        setError('Cannot list: Contracts not ready or NFT details missing.'); 
+        return;
+    }
     if (!isOwner) {
-      setError('You are not the owner of this NFT.');
-      return;
+        
+        alert('You do not own this NFT.');
+        setError('You do not own this NFT.');
+        return;
     }
 
     if (isListed) {
-      setError('This NFT is already listed.');
-      return;
+        alert('This NFT is already listed on the marketplace.');
+        setError('This NFT is already listed on the marketplace.');
+        return;
     }
 
-    if (userRole !== 'student organization') {
-      setError('Only student organizations can list NFTs.');
-      return;
+    if (isInAuction) {
+        alert('This NFT is currently in an auction and cannot be listed on the marketplace.');
+        return; 
+    }
+   
+    const price = prompt('Enter the listing price in WBT:'); 
+    if (price === null || price.trim() === '' || isNaN(parseFloat(price)) || parseFloat(price) <= 0) {
+         alert('Invalid price entered. Please enter a positive number.'); 
+        setError('Invalid price entered.'); 
+        return;
     }
 
-    const price = prompt('Enter the listing price in WBT:');
-    if (price === null || price.trim() === '') {
-      setError('Price cannot be empty.');
-      return;
-    }
+    setError(null);
+    setLoading(true); 
 
     try {
-      const priceInWei = ethers.parseEther(price);
-      const tx = await marketplaceContract.listNFT(
-        STUDENTNFT_ADDRESS,
-        nftDetails.tokenId,
-        priceInWei
-      );
-      setLoading(true);
-      await tx.wait();
-      setIsListed(true);
-      setListingPrice(price);
-      setLoading(false);
-      alert('NFT listed successfully!');
+        const priceInWei = ethers.parseEther(price);
+
+        console.log(`Approving marketplace (${MARKETPLACE_ADDRESS}) for token ${nftDetails.tokenId}...`);
+        const approvalTx = await contract.approve(MARKETPLACE_ADDRESS, nftDetails.tokenId);
+        await approvalTx.wait();
+        console.log('Approval successful.');
+
+        console.log(`Listing token ${nftDetails.tokenId} for ${price} WBT (${priceInWei.toString()} wei)...`);
+        const listTx = await marketplaceContract.listNFT(
+            STUDENTNFT_ADDRESS,
+            nftDetails.tokenId,
+            priceInWei
+        );
+        await listTx.wait();
+        console.log('NFT listed successfully!');
+
+        setIsListed(true);
+        setListingPrice(price);
+        alert('NFT listed successfully!'); 
+
     } catch (error) {
-      console.error('Error listing NFT:', error);
-      setError('Failed to list NFT.');
-      setLoading(false);
+        console.error('Error listing NFT:', error);
+        let userMessage = 'Listing failed. Check console for details.';
+        if (error.code === 'ACTION_REJECTED') {
+             userMessage = 'Transaction rejected in wallet.';
+        } else if (error.message.includes('insufficient funds')) {
+             userMessage = 'Listing failed: Insufficient funds for gas.';
+        } else if (error.message.includes('already listed')) {
+             userMessage = 'Listing failed: Contract indicates token is already listed.';
+             setIsListed(true); 
+        }
+        alert(`Error: ${userMessage}`); 
+        setError(userMessage); 
+    } finally {
+        setLoading(false);
     }
-  };
+};
+
 
   const handleDelistNFT = async () => {
     if (!marketplaceContract || !nftDetails?.tokenId) {

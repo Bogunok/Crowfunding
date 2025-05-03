@@ -3,12 +3,13 @@ import { ethers } from 'ethers';
 import DatePicker from 'react-datepicker'; 
 import "react-datepicker/dist/react-datepicker.css"; 
 import StudentNFTABI from '../contracts/StudentNFT.json';
+import MarketplaceABI from '../contracts/Marketplace.json';
 import AuctionFactoryABI from '../contracts/AuctionFactory.json';
 import { Web3Context } from '../context/Web3Context';
 import '../styles/AuctionsPage.css'; 
 import '../styles/AuctionModal.css'; 
 import { Link } from 'react-router-dom';
-import { STUDENTNFT_ADDRESS, AUCTIONFACTORY_ADDRESS} from '../constants';
+import { STUDENTNFT_ADDRESS, AUCTIONFACTORY_ADDRESS, MARKETPLACE_ADDRESS} from '../constants';
 
 
 function CreateAuctionModal({ show, onClose, ownedNFTs, onCreateAuction, loading }) {
@@ -121,7 +122,7 @@ function CreateAuctionModal({ show, onClose, ownedNFTs, onCreateAuction, loading
                                 </option>
                             ))}
                         </select>
-                        {ownedNFTs.length === 0 && !loading && <p className="info-text">You don't seem to own any NFTs eligible for auction.</p>}
+                        {ownedNFTs.length === 0 && !loading && <p className="info-text">You don't own any NFTs eligible for auction.</p>}
                         {loading && ownedNFTs.length === 0 && <p className="info-text">Loading your NFTs...</p>}
                     </div>
 
@@ -370,94 +371,125 @@ function AuctionsPage() {
     }, [loadAuctions]);
 
 
+    
     // --- Fetch Owned NFTs for Modal ---
     const loadOwnedNFTsForModal = async () => {
-        if (!signer || !currentWalletAddress) return;
-        setModalLoading(true); // Indicate loading within the modal context
-        setOwnedNFTs([]); // Clear previous list
-        setError(null); // Clear main page error if any
+        if (!signer || !currentWalletAddress) {
+            console.log("Signer or wallet address missing. Cannot load NFTs.");
+            setError("Please connect your wallet first.");
+            return; 
+        }
+    
+        setModalLoading(true); 
+        setOwnedNFTs([]);      
+        setError(null);        
     
         try {
+            // Instantiate contracts
             const nftContract = new ethers.Contract(STUDENTNFT_ADDRESS, StudentNFTABI, signer);
             const factoryContract = new ethers.Contract(AUCTIONFACTORY_ADDRESS, AuctionFactoryABI, signer);
+            const marketplaceContract = new ethers.Contract(MARKETPLACE_ADDRESS, MarketplaceABI, signer);
     
-            // 1. Get *all* auctions (active/ended) to check which tokens are locked
-            const [activeAddresses] = await Promise.all([
-                factoryContract.getActiveAuctions(),
+            // Fetch addresses of all active auctions from the factory
+            const activeAuctionAddressesPromise = factoryContract.getActiveAuctions().catch(err => {
+                console.error("Failed to fetch active auctions:", err);
+                return [];
+            });
+    
+            //Fetch all active listings from the marketplace contract
+            const allActiveListingsPromise = marketplaceContract.getAllActiveListings().catch(err => {
+                console.error("Failed to fetch active listings from marketplace:", err);
+                return [];
+            });
+    
+            const [activeAuctionAddresses, allActiveListings] = await Promise.all([
+                activeAuctionAddressesPromise,
+                allActiveListingsPromise
             ]);
-            const allAuctionAddresses = [...activeAddresses];
     
-            const auctionInfoPromises = allAuctionAddresses.map(addr =>
+
+            const auctionInfoPromises = activeAuctionAddresses.map(addr =>
                 factoryContract.getAuctionInfo(addr).catch(err => {
-                    console.warn(`Could not get info for potential auction ${addr}`, err);
-                    return null; // Ignore auctions we can't get info for
+                    console.warn(`Could not get auction info for address ${addr}:`, err);
+                    return null; 
                 })
             );
-            const auctionInfos = (await Promise.all(auctionInfoPromises)).filter(info => info !== null);
+
+            const auctionInfosUnfiltered = await Promise.all(auctionInfoPromises);
+            const auctionInfos = auctionInfosUnfiltered.filter(info => info !== null);
             const lockedTokenIds = new Set(auctionInfos.map(info => Number(info.tokenId)));
-            console.log("Locked Token IDs in auctions:", lockedTokenIds); // Debug log
+            console.log("Token IDs locked in auctions:", lockedTokenIds);
     
-            // 2. Get total supply from the NFT contract
+            //Process Marketplace Listing Data 
+            const listedTokenIds = new Set();
+            allActiveListings.forEach(listing => {
+                if (listing.nftContractAddress.toLowerCase() === STUDENTNFT_ADDRESS.toLowerCase()) {
+                     listedTokenIds.add(Number(listing.tokenId));
+                }
+            });
+            console.log(`Token IDs listed on Marketplace (for NFT ${STUDENTNFT_ADDRESS}):`, listedTokenIds);
+    
+            // --- Fetch and Filter User's Owned NFTs ---
+    
+            //Get the total supply of the NFT collection to know the upper bound for checking tokens
             const totalSupplyBigInt = await nftContract.totalSupply();
-            const totalSupply = Number(totalSupplyBigInt);
-            console.log('Total Supply:', totalSupply);
+            const totalSupply = Number(totalSupplyBigInt); 
+            console.log('Total NFT Supply:', totalSupply);
     
-            // 3. Iterate through all possible token IDs and check ownership/lock status
-            const ownedNftCheckPromises = [];
+            // Iterate through all possible token IDs 
+            const ownedNftCheckPromises = []; 
             const startIndex = 1; 
+    
             for (let i = startIndex; i <= totalSupply; i++) {
                 const tokenId = i;
     
-                // Skip if the token is locked in an auction
+                // --- Filtering Logic ---
                 if (lockedTokenIds.has(tokenId)) {
-                    console.log(`Token ${tokenId} is locked in an auction, skipping.`);
-                    continue; // Move to the next token ID
+                    continue; 
                 }
     
-                // Add a promise to check ownership and fetch metadata for non-locked tokens
+                if (listedTokenIds.has(tokenId)) {
+                    continue; 
+                }
+    
                 ownedNftCheckPromises.push((async () => {
                     try {
                         const owner = await nftContract.ownerOf(tokenId);
-    
-                        // Check if *currently* owned by the target address
+
                         if (owner.toLowerCase() === currentWalletAddress.toLowerCase()) {
-                            // Fetch metadata only for verified, unlocked, owned tokens
-                            try {
-                                const tokenURI = await nftContract.tokenURI(tokenId);
-                                const processedUri = tokenURI.replace("ipfs://", "ipfs/");
-                                const metadataResponse = await fetch(`http://localhost:8080/${processedUri}`);
-                                if (!metadataResponse.ok) throw new Error(`Metadata fetch failed with status ${metadataResponse.status}`);
-                                const metadata = await metadataResponse.json();
-                                console.log(`User owns TokenID: ${tokenId}, Name: ${metadata.name || 'N/A'}`);
-                                return { tokenId, name: metadata.name || `Token ${tokenId}` };
-                            } catch (metaErr) {
-                                console.error(`Failed to fetch metadata for owned token ${tokenId}:`, metaErr);
-                                console.log(`Returning fallback name for owned token ${tokenId}`);
-                                return { tokenId, name: `Token ${tokenId}` };
-                            }
+                            return {
+                                tokenId: tokenId,
+                                name: `Token ${tokenId}` 
+                            };
                         } else {
-                             return null; // Not owned by the current user
+                            return null;
                         }
                     } catch (ownerError) {
+                        if (ownerError.code === 'CALL_EXCEPTION' || (ownerError.message && ownerError.message.includes('nonexistent token'))) {
+                        } else {
+                           console.warn(`Error checking owner/existence for token ${tokenId}:`, ownerError);
+                        }
                         return null;
                     }
                 })()); 
-            }
-    
-          
+            } 
+  
             const results = await Promise.all(ownedNftCheckPromises);
-            const successfullyOwnedNfts = results.filter(nft => nft !== null);
-            setOwnedNFTs(successfullyOwnedNfts);
-            console.log("Final Owned NFTs for modal:", successfullyOwnedNfts); // Debug log
+
+            const finalOwnedNFTs = results.filter(nft => nft !== null);
     
-        } catch (err) {
-            console.error("Error fetching owned NFTs using totalSupply:", err);
-            setError("Could not load your NFTs. Please check the contract details and network connection.");
-            setOwnedNFTs([]); // Clear NFTs on error
+            console.log("Final list of available owned NFTs for modal:", finalOwnedNFTs);
+            setOwnedNFTs(finalOwnedNFTs);
+    
+        } catch (error) {
+            console.error("Error loading owned NFTs for modal:", error);
+            setError("Failed to load your available NFTs. Please check the console for details or try again later.");
+            setOwnedNFTs([]); 
         } finally {
-            setModalLoading(false);
+            setModalLoading(false); 
         }
     };
+    
 
 
     // --- Handle Opening the Create Modal ---

@@ -125,7 +125,7 @@ function MintPage() {
     const metadataURI = await uploadToIPFS();
 
     if (metadataURI) {
-      setMintingStatus('Minting in progress... Please confirm the transaction in your wallet.');
+      setMintingStatus('Minting in progress...');
       try {
         console.log(`Minting NFT for ${address} with metadata URI: ${metadataURI}`);
         const tx = await contract.mintNFT(metadataURI);
