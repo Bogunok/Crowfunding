@@ -13,6 +13,7 @@ export default function Navbar({ isLoggedIn, userRole }) {
         <Link to="/" className="logo-link">
         <div className="logo">
             <img src={crowIcon} alt="Crow logo" className="logo-icon" />
+            
             Crowfunding
           </div>
         </Link>

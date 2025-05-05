@@ -18,3 +18,4 @@ backend/dist/
 frontend/contracts
 .env
 .env.local
+frontend/src/assets/

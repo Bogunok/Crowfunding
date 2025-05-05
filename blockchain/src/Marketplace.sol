@@ -46,11 +46,13 @@ contract Marketplace {
         require(price > 0, "Price must be greater than zero");
         IERC721 nft = IERC721(nftContractAddress);
         require(nft.ownerOf(tokenId) == msg.sender, "You are not the owner of this NFT");
-        require(nft.getApproved(tokenId) == address(this) || nft.isApprovedForAll(msg.sender, address(this)), "Marketplace must be approved to transfer NFT");
+        require(nft.getApproved(tokenId) == address(this) || nft.isApprovedForAll(msg.sender, address(this)),
+         "Marketplace must be approved to transfer NFT");
         require(_tokenListingIds[tokenId] == 0, "NFT is already listed");
         _listingIds.increment();
         uint256 listingId = _listingIds.current();
-        listingsMap[listingId] = Listing({nftContractAddress: nftContractAddress, tokenId: tokenId, price: price, seller: msg.sender, isListed: false});
+        listingsMap[listingId] = Listing({nftContractAddress: nftContractAddress, 
+        tokenId: tokenId, price: price, seller: msg.sender, isListed: false});
         _tokenListingIds[tokenId] = listingId;
         emit NFTListed(listingId, nftContractAddress, tokenId, price, msg.sender);
     }

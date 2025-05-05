@@ -59,8 +59,8 @@ contract AuctionFactory {
             _startPrice,
             originalCreator // Pass the original creator's address
         );
-
-        address auctionAddress = address(newAuction); // Get the address of the deployed contract
+        // Get the address of the deployed contract
+        address auctionAddress = address(newAuction); 
 
         // Store auction information
         AuctionInfo memory auctionInfo = AuctionInfo({

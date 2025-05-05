@@ -50,3 +50,35 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); 
 }
+
+.photo-gallery-container {
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 2rem 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem 0; 
+  &::-webkit-scrollbar {
+    display: none; 
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+}
+  
+  .photo-gallery-track {
+    display: flex;
+    width: fit-content;
+  }
+  
+  
+  .photo-gallery-track img {
+    height: 250px;
+    width: auto;
+    margin-right: 1rem; 
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+  }
+  
